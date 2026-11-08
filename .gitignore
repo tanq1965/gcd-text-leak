@@ -1,0 +1,28 @@
+# Nháp và output debug
+scratch/
+
+# Dữ liệu lớn, không commit (để Kaggle/Drive, README ghi link)
+rtg/
+feats/
+*.npy
+*.pkl
+# Exception: shared SSB split files
+!third_party/**/ssb_splits/*.pkl
+*.pt
+*.pth
+*_textfeatures.pt
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Hệ điều hành
+.DS_Store
+
+# LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
