@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import random
 from pathlib import Path
 from typing import Optional
 
@@ -15,6 +16,14 @@ from tqdm import tqdm
 
 DATASETS = ("cub", "scars", "aircraft")
 FEATURE_DIM = 512
+
+
+def _set_seed(seed: int = 0) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
 
 
 class SplitImageDataset(Dataset[tuple[torch.Tensor, str]]):
@@ -57,6 +66,7 @@ def extract_dataset_features(
     data_root: str | Path | None = None,
 ) -> tuple[Path, Path]:
     """Extract and save image features and IDs, both in split CSV row order."""
+    _set_seed()
     if dataset_name not in DATASETS:
         raise ValueError(f"unknown dataset {dataset_name!r}; expected one of {DATASETS}")
     if batch_size < 1 or num_workers < 0:

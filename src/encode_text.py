@@ -3,14 +3,18 @@ from __future__ import annotations
 
 import argparse
 import pickle
+import random
 from pathlib import Path
 from typing import Mapping, Optional, Sequence
 
 import numpy as np
-import open_clip
 import pandas as pd
-import torch
 from tqdm import tqdm
+
+try:
+    import torch
+except ModuleNotFoundError:  # Keep prompt/RTG utilities usable without model dependencies.
+    torch = None  # type: ignore[assignment]
 
 BASE_PROMPT = {
     "cub": "A photo of a bird",
@@ -18,6 +22,17 @@ BASE_PROMPT = {
     "aircraft": "A photo of an aircraft",
 }
 FEATURE_DIM = 512
+TAG_PROBABILITY_WORDS = ("most likely", "probably", "perhaps")
+ATTRIBUTE_PROBABILITY_WORDS = ("Likely", "Perhaps", "Could be")
+
+
+def _set_seed(seed: int = 0) -> None:
+    random.seed(seed)
+    np.random.seed(seed)
+    if torch is not None:
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
 
 
 def build_sentence(
@@ -28,18 +43,28 @@ def build_sentence(
     """Construct one TextGCD sentence from tags and attribute sentences."""
     if dataset_name not in BASE_PROMPT:
         raise ValueError(f"unknown dataset {dataset_name!r}")
-    clean_tags = [str(tag).strip() for tag in (tags or ()) if str(tag).strip()]
-    sentence = BASE_PROMPT[dataset_name]
-    if clean_tags:
-        sentence += ", " + ", ".join(clean_tags)
-    sentence += "."
-    clean_attributes = []
-    for attribute in attributes or ():
-        text = str(attribute).strip()
+    clean_tags = []
+    for tag in tags or ():
+        text = str(tag).replace("a photo of a ", "").strip()
         if text:
-            clean_attributes.append(text if text.endswith(".") else text + ".")
-    if clean_attributes:
-        sentence += " " + " ".join(clean_attributes)
+            clean_tags.append(text)
+    clean_attributes = [str(attribute).strip() for attribute in attributes or () if str(attribute).strip()]
+
+    tag_text = [
+        f"{TAG_PROBABILITY_WORDS[index]}{' a' if dataset_name == 'scars' else ''} {tag}"
+        for index, tag in enumerate(clean_tags)
+    ]
+    attribute_text = [
+        f"{ATTRIBUTE_PROBABILITY_WORDS[index]} {attribute}"
+        for index, attribute in enumerate(clean_attributes)
+    ]
+    sentence = BASE_PROMPT[dataset_name]
+    if tag_text:
+        sentence += ", " + ", ".join(tag_text) + "."
+    else:
+        sentence += "."
+    if attribute_text:
+        sentence += " " + ". ".join(attribute_text) + "."
     return sentence
 
 
@@ -49,10 +74,15 @@ def encode_sentences(
     device: Optional[str] = None,
 ) -> np.ndarray:
     """Return float32, L2-normalized CLIP text features with shape (N, 512)."""
+    _set_seed()
     if batch_size < 1:
         raise ValueError("batch_size must be positive")
     if not sentences:
         return np.empty((0, FEATURE_DIM), dtype=np.float32)
+    if torch is None:
+        raise ModuleNotFoundError("encode_sentences requires the torch package")
+    import open_clip
+
     target_device = torch.device(device or ("cuda" if torch.cuda.is_available() else "cpu"))
     model, _, _ = open_clip.create_model_and_transforms("ViT-B-16", pretrained="openai")
     tokenizer = open_clip.get_tokenizer("ViT-B-16")
@@ -81,6 +111,7 @@ def encode_rtg_pkl(
     batch_size: int = 128,
 ) -> Path:
     """Encode RTG descriptions after reordering them to split CSV order."""
+    _set_seed()
     df = pd.read_csv(split_csv_path, dtype={"image_id": str})
     if "image_id" not in df or df["image_id"].isna().any() or df["image_id"].duplicated().any():
         raise ValueError("split CSV must contain unique, non-null image_id values")
@@ -100,19 +131,35 @@ def encode_rtg_pkl(
     else:
         raise ValueError("RTG pickle must contain a mapping or list of mappings")
 
+    split_ids = df["image_id"].astype(str).tolist()
+    missing_ids = [image_id for image_id in split_ids if image_id not in rtg_dict]
+    if missing_ids:
+        examples = missing_ids[:5]
+        raise KeyError(f"RTG is missing {len(missing_ids)} split image_id(s), e.g. {examples}")
+
     sentences = []
-    for image_id in df["image_id"].astype(str):
-        item = rtg_dict.get(image_id, {})
+    empty_count = 0
+    for image_id in split_ids:
+        item = rtg_dict[image_id]
         if not isinstance(item, Mapping):
             raise ValueError(f"RTG entry for {image_id} must be a mapping")
-        sentences.append(build_sentence(dataset_name, item.get("tags", []), item.get("attributes", [])))
+        tags = item.get("tags", [])
+        attributes = item.get("attributes", [])
+        if not tags and not attributes:
+            empty_count += 1
+        sentences.append(build_sentence(dataset_name, tags, attributes))
+    if empty_count:
+        print(f"{empty_count} image(s) had no tags or attributes; using base text")
     features = encode_sentences(sentences, batch_size=batch_size)
     if features.shape != (len(df), FEATURE_DIM):
         raise ValueError(f"text feature shape mismatch: {features.shape}")
     output_path = Path(output_npy_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     np.save(output_path, features)
+    ids_path = output_path.with_name(f"{output_path.stem}_ids.npy")
+    np.save(ids_path, np.asarray(split_ids, dtype=str))
     print(f"Encoded {len(features)} sentences -> {output_path}")
+    print(f"Saved image IDs -> {ids_path}")
     return output_path
 
 
