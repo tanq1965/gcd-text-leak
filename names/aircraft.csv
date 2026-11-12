@@ -1,0 +1,101 @@
+label,class_name,name_norm,is_old
+0,707-320,707 320,1
+1,727-200,727 200,1
+2,737-200,737 200,1
+3,737-300,737 300,1
+4,737-400,737 400,1
+5,737-500,737 500,1
+6,747-100,747 100,1
+7,747-200,747 200,1
+8,757-200,757 200,1
+9,767-200,767 200,1
+10,767-300,767 300,1
+11,777-200,777 200,1
+12,A300B4,a300b4,1
+13,A310,a310,1
+14,A318,a318,1
+15,A319,a319,1
+16,A330-200,a330 200,1
+17,A330-300,a330 300,1
+18,A340-200,a340 200,1
+19,A340-300,a340 300,1
+20,A380,a380,1
+21,An-12,an 12,1
+22,BAE 146-200,bae 146 200,1
+23,BAE 146-300,bae 146 300,1
+24,BAE-125,bae 125,1
+25,Boeing 717,boeing 717,1
+26,C-47,c 47,1
+27,CRJ-200,crj 200,1
+28,CRJ-700,crj 700,1
+29,CRJ-900,crj 900,1
+30,Cessna 172,cessna 172,1
+31,Cessna 208,cessna 208,1
+32,DC-10,dc 10,1
+33,DC-3,dc 3,1
+34,DC-9-30,dc 9 30,1
+35,DH-82,dh 82,1
+36,DHC-1,dhc 1,1
+37,Dornier 328,dornier 328,1
+38,E-170,e 170,1
+39,E-190,e 190,1
+40,E-195,e 195,1
+41,EMB-120,emb 120,1
+42,Eurofighter Typhoon,eurofighter typhoon,1
+43,F/A-18,f/a 18,1
+44,Fokker 100,fokker 100,1
+45,Fokker 50,fokker 50,1
+46,Global Express,global express,1
+47,SR-20,sr 20,1
+48,Spitfire,spitfire,1
+49,Yak-42,yak 42,1
+50,737-600,737 600,0
+51,737-700,737 700,0
+52,737-800,737 800,0
+53,737-900,737 900,0
+54,747-300,747 300,0
+55,747-400,747 400,0
+56,A340-500,a340 500,0
+57,A340-600,a340 600,0
+58,A320,a320,0
+59,A321,a321,0
+60,767-400,767 400,0
+61,777-300,777 300,0
+62,757-300,757 300,0
+63,Fokker 70,fokker 70,0
+64,Hawk T1,hawk t1,0
+65,Challenger 600,challenger 600,0
+66,Cessna 525,cessna 525,0
+67,Cessna 560,cessna 560,0
+68,DC-6,dc 6,0
+69,DC-8,dc 8,0
+70,DHC-6,dhc 6,0
+71,DHC-8-100,dhc 8 100,0
+72,DHC-8-300,dhc 8 300,0
+73,ERJ 135,erj 135,0
+74,ERJ 145,erj 145,0
+75,Embraer Legacy 600,embraer legacy 600,0
+76,MD-11,md 11,0
+77,MD-80,md 80,0
+78,MD-87,md 87,0
+79,MD-90,md 90,0
+80,Gulfstream IV,gulfstream iv,0
+81,Gulfstream V,gulfstream v,0
+82,C-130,c 130,0
+83,L-1011,l 1011,0
+84,Beechcraft 1900,beechcraft 1900,0
+85,Model B200,model b200,0
+86,Falcon 2000,falcon 2000,0
+87,Falcon 900,falcon 900,0
+88,Tu-134,tu 134,0
+89,Tu-154,tu 154,0
+90,ATR-42,atr 42,0
+91,ATR-72,atr 72,0
+92,Saab 2000,saab 2000,0
+93,Saab 340,saab 340,0
+94,Tornado,tornado,0
+95,F-16A/B,f 16a/b,0
+96,PA-28,pa 28,0
+97,Il-76,il 76,0
+98,DR-400,dr 400,0
+99,Metroliner,metroliner,0

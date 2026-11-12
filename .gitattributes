@@ -6,3 +6,6 @@
 *.jpg binary
 *.png binary
 *.pdf binary
+lexicon/aircraft/C/tags.csv whitespace=blank-at-eof,space-before-tab,-blank-at-eol
+lexicon/cub/C/tags.csv whitespace=blank-at-eof,space-before-tab,-blank-at-eol
+lexicon/scars/C/tags.csv whitespace=blank-at-eof,space-before-tab,-blank-at-eol

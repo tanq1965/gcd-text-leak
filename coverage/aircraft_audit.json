@@ -1,0 +1,16 @@
+{
+  "dataset": "aircraft",
+  "classes": 100,
+  "old": 50,
+  "new": 50,
+  "original_tags": 22131,
+  "original_attributes": 34733,
+  "C_removed_tags": 53,
+  "C_modified_attributes": 402,
+  "D_removed_tags": 22131,
+  "D_modified_attributes": 807,
+  "D_scope": "dataset_classes_only",
+  "approved_aliases": [],
+  "unmatched_classes": [],
+  "review_note": "Unmatched classes require manual review; substring candidates are leads, not approved aliases. Checks do not detect every embedded name in free text."
+}
