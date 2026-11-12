@@ -17,3 +17,7 @@ Xem [third_party/SOURCES.md](third_party/SOURCES.md).
 ## Chạy lại
 
 ## File lớn
+
+### Pre-extracted Image Features (N4)
+- **File:** `feats_n4.zip` (Chứa `{ds}_img.npy` và `{ds}_img_ids.npy` cho CUB, Stanford Cars, FGVC-Aircraft).
+- **Google Drive Download:** [Tải tại đây](https://drive.google.com/drive/folders/1iZhZTkanZov6NvgCODRuZwbILuW1HAdr?usp=sharing)

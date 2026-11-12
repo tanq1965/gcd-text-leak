@@ -3,7 +3,7 @@
 Run from the repo root:
     python -m src.eval --dataset cub --variant A --feats feats/cub_img.npy --seed 0
     python -m src.eval --dataset cub --variant A+B --feats feats/cub_img.npy --feats2 feats/cub_txt_B.npy --alpha 0.5
-Feature file X.npy is paired with X.ids.txt (one image_id per line).
+Feature file X.npy is paired with X_ids.npy (or the legacy X.ids.txt).
 Scores only the rows with is_labeled=0; mask = is_old of those rows.
 """
 from __future__ import annotations
@@ -40,11 +40,20 @@ def load_splits(path: Path) -> pd.DataFrame:
 
 
 def load_feats(path: Path) -> tuple[np.ndarray, np.ndarray]:
-    """Read X.npy [N, D] (cast to float32) and X.ids.txt (N image_ids)."""
+    """Read X.npy [N, D] and its image IDs from X_ids.npy or legacy X.ids.txt."""
     feats = np.load(path)
     if feats.ndim != 2:
         raise ValueError(f"{path}: expected a 2-D array, got shape {feats.shape}")
-    ids = np.array(path.with_suffix(".ids.txt").read_text(encoding="utf-8").splitlines())
+    ids_npy = path.with_name(f"{path.stem}_ids.npy")
+    ids_txt = path.with_suffix(".ids.txt")
+    if ids_npy.is_file():
+        ids = np.asarray(np.load(ids_npy, allow_pickle=False)).astype(str)
+    elif ids_txt.is_file():
+        ids = np.array(ids_txt.read_text(encoding="utf-8").splitlines())
+    else:
+        raise FileNotFoundError(f"missing image IDs: expected {ids_npy} or {ids_txt}")
+    if ids.ndim != 1:
+        raise ValueError(f"{ids_npy}: expected a 1-D image_id array, got shape {ids.shape}")
     if len(ids) != len(feats):
         raise ValueError(f"{path}: {len(feats)} rows but {len(ids)} ids")
     return feats.astype(np.float32), ids
