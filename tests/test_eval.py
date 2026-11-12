@@ -84,6 +84,57 @@ def test_image_id_mismatch_raises():
         ev.align_to_splits(feats, ids, ids[:-1] + [ids[0]])                 # duplicate in splits
 
 
+def _unit_rows(n: int, d: int, seed: int) -> np.ndarray:
+    """n random L2-normalised float32 rows of dimension d."""
+    x = np.random.default_rng(seed).standard_normal((n, d)).astype(np.float32)
+    return x / np.linalg.norm(x, axis=1, keepdims=True)
+
+
+def test_load_feats_ids_npy_then_align_to_splits(tmp_path):
+    splits, feats = make_blobs([5, 5, 5, 5], n_old=2)
+    ids = splits["image_id"].to_numpy()
+    perm = np.random.default_rng(2).permutation(len(ids))
+    np.save(tmp_path / "x_img.npy", feats[perm])                    # rows in a shuffled order
+    np.save(tmp_path / "x_img_ids.npy", ids[perm].astype(str))      # <U array, same order as the rows
+    assert np.load(tmp_path / "x_img_ids.npy").dtype.kind == "U"    # plain np.load (allow_pickle=False) works
+    loaded, got_ids = ev.load_feats(tmp_path / "x_img.npy")
+    assert loaded.dtype == np.float32 and got_ids.dtype.kind == "U"
+    assert np.array_equal(got_ids, ids[perm])
+    aligned = ev.align_to_splits(loaded, got_ids, splits["image_id"])
+    assert np.array_equal(aligned, feats)                           # back to the canonical splits order
+
+
+def test_load_feats_legacy_ids_txt(tmp_path):
+    splits, feats = make_blobs([5, 5, 5, 5], n_old=2)
+    ids = splits["image_id"].to_numpy()
+    perm = np.random.default_rng(3).permutation(len(ids))
+    np.save(tmp_path / "x_img.npy", feats[perm])
+    (tmp_path / "x_img.ids.txt").write_text("\n".join(ids[perm]) + "\n", encoding="utf-8")
+    loaded, got_ids = ev.load_feats(tmp_path / "x_img.npy")
+    assert np.array_equal(ev.align_to_splits(loaded, got_ids, splits["image_id"]), feats)
+
+
+def test_load_feats_prefers_ids_npy_over_ids_txt(tmp_path):
+    """Current behaviour: when both files exist, `_ids.npy` wins and `.ids.txt` is not consulted."""
+    np.save(tmp_path / "x.npy", _unit_rows(4, 8, 0))
+    np.save(tmp_path / "x_ids.npy", np.array(["a.jpg", "b.jpg", "c.jpg", "d.jpg"]))
+    (tmp_path / "x.ids.txt").write_text("w.jpg\nx.jpg\ny.jpg\nz.jpg\n", encoding="utf-8")
+    _, got_ids = ev.load_feats(tmp_path / "x.npy")
+    assert list(got_ids) == ["a.jpg", "b.jpg", "c.jpg", "d.jpg"]
+
+
+def test_load_feats_errors(tmp_path):
+    np.save(tmp_path / "x.npy", _unit_rows(4, 8, 1))
+    with pytest.raises(FileNotFoundError, match="missing image IDs"):            # no ids file at all
+        ev.load_feats(tmp_path / "x.npy")
+    np.save(tmp_path / "x_ids.npy", np.array(["a.jpg", "b.jpg", "c.jpg"]))      # 3 ids for 4 rows
+    with pytest.raises(ValueError, match="rows but"):
+        ev.load_feats(tmp_path / "x.npy")
+    np.save(tmp_path / "x_ids.npy", np.array(["a.jpg"] * 4, dtype=object))      # object dtype is rejected
+    with pytest.raises(ValueError, match="allow_pickle"):
+        ev.load_feats(tmp_path / "x.npy")
+
+
 def test_combine_features():
     rng = np.random.default_rng(0)
 
