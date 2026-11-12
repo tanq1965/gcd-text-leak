@@ -19,6 +19,7 @@ __pycache__/
 
 # Hệ điều hành
 .DS_Store
+*.stackdump
 
 # LaTeX
 *.aux
