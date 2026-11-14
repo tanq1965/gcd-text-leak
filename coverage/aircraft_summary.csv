@@ -1,0 +1,4 @@
+group,classes,in_tag,tag_pct,in_attribute,attribute_pct,in_either,either_pct
+All,100,100,100.0,100,100.0,100,100.0
+Old,50,50,100.0,50,100.0,50,100.0
+New,50,50,100.0,50,100.0,50,100.0

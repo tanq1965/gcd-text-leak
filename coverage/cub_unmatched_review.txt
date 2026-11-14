@@ -1,0 +1,83 @@
+CUB N3 unmatched-class review (alias-aware)
+===========================================
+
+Unmatched after exact names + Tân-approved aliases: 57 / 200 classes.
+A substring hit is only a review lead; it is not enough to declare two species equivalent.
+
+Substring candidates requiring manual review:
+- 130.Tree_Sparrow: 1 tag hit(s), 8 attribute hit(s)
+  Tag example: a photo of a American Tree Sparrow
+  Attribute example: american tree sparrow which has small, sparrow-like bird
+- 044.Frigatebird: 1 tag hit(s), 7 attribute hit(s)
+  Tag example: a photo of a Magnificent Frigatebird
+  Attribute example: magnificent frigatebird which is a large seabird
+- 092.Nighthawk: 3 tag hit(s), 14 attribute hit(s)
+  Tag example: a photo of a Common Nighthawk
+  Attribute example: common nighthawk which is a medium-sized, brown and grey bird with a long wingspan
+
+Alias decisions already approved by Tân:
+- 105.Whip_poor_Will <- Eastern Whip-poor-will and Mexican Whip-poor-will (AOU 2010 split).
+  The current TextGCD tag lexicon contains Eastern Whip-poor-will; no Mexican Whip-poor-will row was found.
+- 091.Mockingbird <- Northern Mockingbird (only common North American mockingbird).
+- 022.Chuck_will_Widow is a separate CUB class; it is not an alias of Whip_poor_Will.
+
+Remaining unmatched classes (classmap order):
+- 151.Black_capped_Vireo
+- 071.Long_tailed_Jaeger
+- 130.Tree_Sparrow
+- 135.Bank_Swallow
+- 027.Shiny_Cowbird
+- 122.Harris_Sparrow
+- 124.Le_Conte_Sparrow
+- 168.Kentucky_Warbler
+- 032.Mangrove_Cuckoo
+- 070.Green_Violetear
+- 018.Spotted_Catbird
+- 006.Least_Auklet
+- 180.Wilson_Warbler
+- 112.Great_Grey_Shrike
+- 082.Ringed_Kingfisher
+- 024.Red_faced_Cormorant
+- 044.Frigatebird
+- 045.Northern_Fulmar
+- 001.Black_footed_Albatross
+- 125.Lincoln_Sparrow
+- 081.Pied_Kingfisher
+- 080.Green_Kingfisher
+- 098.Scott_Oriole
+- 145.Elegant_Tern
+- 065.Slaty_backed_Gull
+- 178.Swainson_Warbler
+- 008.Rhinoceros_Auklet
+- 134.Cape_Glossy_Starling
+- 083.White_breasted_Kingfisher
+- 092.Nighthawk
+- 009.Brewer_Blackbird
+- 025.Pelagic_Cormorant
+- 141.Artic_Tern
+- 115.Brewer_Sparrow
+- 108.White_necked_Raven
+- 072.Pomarine_Jaeger
+- 113.Baird_Sparrow
+- 123.Henslow_Sparrow
+- 103.Sayornis
+- 126.Nelson_Sharp_tailed_Sparrow
+- 084.Red_legged_Kittiwake
+- 023.Brandt_Cormorant
+- 193.Bewick_Wren
+- 074.Florida_Jay
+- 067.Anna_Hummingbird
+- 171.Myrtle_Warbler
+- 022.Chuck_will_Widow
+- 063.Ivory_Gull
+- 003.Sooty_Albatross
+- 061.Heermann_Gull
+- 093.Clark_Nutcracker
+- 002.Laysan_Albatross
+- 110.Geococcyx
+- 005.Crested_Auklet
+- 007.Parakeet_Auklet
+- 048.European_Goldfinch
+- 106.Horned_Puffin
+
+Review policy: do not add new aliases without a documented taxonomic/name-equivalence decision.
