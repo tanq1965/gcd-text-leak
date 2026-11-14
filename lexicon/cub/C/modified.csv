@@ -42,6 +42,20 @@ Lexicon_attributes.csv,24167,american white pelican which has black wingtips,has
 Lexicon_attributes.csv,24168,american white pelican which has large pouch on lower beak for scooping up fish,has large pouch on lower beak for scooping up fish,101.White_Pelican,alias,CUB White Pelican species name
 Lexicon_attributes.csv,24169,american white pelican which has black eye patches,has black eye patches,101.White_Pelican,alias,CUB White Pelican species name
 Lexicon_attributes.csv,24170,american white pelican which has white head and neck,has white head and neck,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24194,"annas hummingbird which has small size, usually only 3-4 inches long","has small size, usually only 3-4 inches long",067.Anna_Hummingbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24195,annas hummingbird which has Iridescent green plumage on its back,has Iridescent green plumage on its back,067.Anna_Hummingbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24196,annas hummingbird which has white and grey breast,has white and grey breast,067.Anna_Hummingbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24197,"annas hummingbird which has long, thin beak","has long, thin beak",067.Anna_Hummingbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24198,annas hummingbird which has fast and direct flight pattern,has fast and direct flight pattern,067.Anna_Hummingbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24199,annas hummingbird which has males have a bright red throat patch called a gorget,has males have a bright red throat patch called a gorget,067.Anna_Hummingbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24200,arctic tern which has white body with gray wings,has white body with gray wings,141.Artic_Tern,alias,possessive/typo spelling
+Lexicon_attributes.csv,24201,arctic tern which has black cap on head,has black cap on head,141.Artic_Tern,alias,possessive/typo spelling
+Lexicon_attributes.csv,24202,"arctic tern which has long, pointed wings","has long, pointed wings",141.Artic_Tern,alias,possessive/typo spelling
+Lexicon_attributes.csv,24203,"arctic tern which has short, forked tail","has short, forked tail",141.Artic_Tern,alias,possessive/typo spelling
+Lexicon_attributes.csv,24204,"arctic tern which has long, pointed bill","has long, pointed bill",141.Artic_Tern,alias,possessive/typo spelling
+Lexicon_attributes.csv,24205,"arctic tern which has long, red legs","has long, red legs",141.Artic_Tern,alias,possessive/typo spelling
+Lexicon_attributes.csv,24206,arctic tern which has white underparts,has white underparts,141.Artic_Tern,alias,possessive/typo spelling
+Lexicon_attributes.csv,24207,arctic tern which has black legs and feet,has black legs and feet,141.Artic_Tern,alias,possessive/typo spelling
 Lexicon_attributes.csv,24285,belted kingfisher which has medium-sized bird,has medium-sized bird,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24286,belted kingfisher which has blue or grey upperparts,has blue or grey upperparts,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24287,belted kingfisher which has white underparts,has white underparts,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
@@ -51,6 +65,13 @@ Lexicon_attributes.csv,24290,belted kingfisher which has black band across the c
 Lexicon_attributes.csv,24291,belted kingfisher which has bright orange under-tail coverts,has bright orange under-tail coverts,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24292,belted kingfisher which has long legs,has long legs,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24293,belted kingfisher which has pointed crest on the head,has pointed crest on the head,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
+Lexicon_attributes.csv,24294,bewicks wren which has small songbird,has small songbird,193.Bewick_Wren,alias,possessive/typo spelling
+Lexicon_attributes.csv,24295,bewicks wren which has brown or grey back,has brown or grey back,193.Bewick_Wren,alias,possessive/typo spelling
+Lexicon_attributes.csv,24296,bewicks wren which has white throat and breast,has white throat and breast,193.Bewick_Wren,alias,possessive/typo spelling
+Lexicon_attributes.csv,24297,bewicks wren which has black and white barred tail,has black and white barred tail,193.Bewick_Wren,alias,possessive/typo spelling
+Lexicon_attributes.csv,24298,bewicks wren which has white eyebrows,has white eyebrows,193.Bewick_Wren,alias,possessive/typo spelling
+Lexicon_attributes.csv,24299,bewicks wren which has short bill,has short bill,193.Bewick_Wren,alias,possessive/typo spelling
+Lexicon_attributes.csv,24300,bewicks wren which has short legs,has short legs,193.Bewick_Wren,alias,possessive/typo spelling
 Lexicon_attributes.csv,24471,black throated blue warbler which has small songbird,has small songbird,160.Black_throated_Blue_Warbler,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24472,"black throated blue warbler which has dark blue head, throat, and upper breast","has dark blue head, throat, and upper breast",160.Black_throated_Blue_Warbler,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24473,black throated blue warbler which has yellowish-white belly,has yellowish-white belly,160.Black_throated_Blue_Warbler,C_strip_New_prefix_X_which,
@@ -80,6 +101,29 @@ Lexicon_attributes.csv,24558,blue winged warbler which has white eye ring,has wh
 Lexicon_attributes.csv,24559,"blue winged warbler which has long, thin bill","has long, thin bill",161.Blue_winged_Warbler,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24560,blue winged warbler which has yellow throat patch,has yellow throat patch,161.Blue_winged_Warbler,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24561,blue winged warbler which has dark legs and feet,has dark legs and feet,161.Blue_winged_Warbler,C_strip_New_prefix_X_which,
+Lexicon_attributes.csv,24603,"brandts cormorant which has long, slender neck","has long, slender neck",023.Brandt_Cormorant,alias,possessive/typo spelling
+Lexicon_attributes.csv,24604,"brandts cormorant which has black body with white patches on the face, neck, and belly","has black body with white patches on the face, neck, and belly",023.Brandt_Cormorant,alias,possessive/typo spelling
+Lexicon_attributes.csv,24605,"brandts cormorant which has long, slender beak","has long, slender beak",023.Brandt_Cormorant,alias,possessive/typo spelling
+Lexicon_attributes.csv,24606,brandts cormorant which has webbed feet,has webbed feet,023.Brandt_Cormorant,alias,possessive/typo spelling
+Lexicon_attributes.csv,24607,"brandts cormorant which has long, hooked tail","has long, hooked tail",023.Brandt_Cormorant,alias,possessive/typo spelling
+Lexicon_attributes.csv,24608,brandts cormorant which has bright yellow eyes,has bright yellow eyes,023.Brandt_Cormorant,alias,possessive/typo spelling
+Lexicon_attributes.csv,24609,"brandts cormorant which has found in coastal waters of the Pacific Ocean, mostly in Japan and western North America","has found in coastal waters of the Pacific Ocean, mostly in Japan and western North America",023.Brandt_Cormorant,alias,possessive/typo spelling
+Lexicon_attributes.csv,24618,brewers blackbird which has glossy black feathers,has glossy black feathers,009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24619,brewers blackbird which has yellow eyes with a black eye ring,has yellow eyes with a black eye ring,009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24620,brewers blackbird which has short bill,has short bill,009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24621,"brewers blackbird which has long, tapered tail","has long, tapered tail",009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24622,brewers blackbird which has white wing patches,has white wing patches,009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24623,brewers blackbird which has yellow legs and feet,has yellow legs and feet,009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24624,brewers blackbird which has males have a rusty-red patch on the shoulder,has males have a rusty-red patch on the shoulder,009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_attributes.csv,24625,brewers sparrow which has small sparrow,has small sparrow,115.Brewer_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,24626,"brewers sparrow which has brownish-grey head, back and wings","has brownish-grey head, back and wings",115.Brewer_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,24627,brewers sparrow which has white throat and belly,has white throat and belly,115.Brewer_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,24628,brewers sparrow which has black line along middle of breast,has black line along middle of breast,115.Brewer_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,24629,brewers sparrow which has white eyebrow and narrow white line behind eye,has white eyebrow and narrow white line behind eye,115.Brewer_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,24630,brewers sparrow which has yellow bill,has yellow bill,115.Brewer_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,24631,brewers sparrow which has short tail,has short tail,115.Brewer_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,24632,"brewers sparrow which has short, rounded wings","has short, rounded wings",115.Brewer_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,24633,brewers sparrow which has long pinkish-brown legs,has long pinkish-brown legs,115.Brewer_Sparrow,alias,possessive/typo spelling
 Lexicon_attributes.csv,24664,bronzed cowbird which has small black and brown bird,has small black and brown bird,026.Bronzed_Cowbird,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24665,bronzed cowbird which has black head with a bronze-brown back and wings,has black head with a bronze-brown back and wings,026.Bronzed_Cowbird,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24666,bronzed cowbird which has yellow eyes,has yellow eyes,026.Bronzed_Cowbird,C_strip_New_prefix_X_which,
@@ -142,6 +186,15 @@ Lexicon_attributes.csv,24986,chipping sparrow which is a black bill,is a black b
 Lexicon_attributes.csv,24987,"chipping sparrow which is a short, forked tail","is a short, forked tail",116.Chipping_Sparrow,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24988,chipping sparrow which is a white outer tail feathers,is a white outer tail feathers,116.Chipping_Sparrow,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24989,chipping sparrow which is a white wing bar,is a white wing bar,116.Chipping_Sparrow,C_strip_New_prefix_X_which,
+Lexicon_attributes.csv,25014,clarks nutcracker which has medium-sized blackbird,has medium-sized blackbird,093.Clark_Nutcracker,alias,possessive/typo spelling
+Lexicon_attributes.csv,25015,clarks nutcracker which has white wing patches,has white wing patches,093.Clark_Nutcracker,alias,possessive/typo spelling
+Lexicon_attributes.csv,25016,clarks nutcracker which has black and white spotted back,has black and white spotted back,093.Clark_Nutcracker,alias,possessive/typo spelling
+Lexicon_attributes.csv,25017,"clarks nutcracker which has long, pointed bill","has long, pointed bill",093.Clark_Nutcracker,alias,possessive/typo spelling
+Lexicon_attributes.csv,25018,clarks nutcracker which has black head and neck,has black head and neck,093.Clark_Nutcracker,alias,possessive/typo spelling
+Lexicon_attributes.csv,25019,clarks nutcracker which has white eye ring,has white eye ring,093.Clark_Nutcracker,alias,possessive/typo spelling
+Lexicon_attributes.csv,25020,clarks nutcracker which has yellow spot on the back of the neck,has yellow spot on the back of the neck,093.Clark_Nutcracker,alias,possessive/typo spelling
+Lexicon_attributes.csv,25021,clarks nutcracker which has long tail,has long tail,093.Clark_Nutcracker,alias,possessive/typo spelling
+Lexicon_attributes.csv,25022,clarks nutcracker which has white belly,has white belly,093.Clark_Nutcracker,alias,possessive/typo spelling
 Lexicon_attributes.csv,25190,"dark eyed junco which has small, round bird","has small, round bird",076.Dark_eyed_Junco,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,25191,dark eyed junco which has gray upperparts with a white underside,has gray upperparts with a white underside,076.Dark_eyed_Junco,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,25192,dark eyed junco which has black head and throat with a white patch above the eye,has black head and throat with a white patch above the eye,076.Dark_eyed_Junco,C_strip_New_prefix_X_which,
@@ -257,6 +310,22 @@ Lexicon_attributes.csv,25680,"groove billed ani which has long, curved bill with
 Lexicon_attributes.csv,25681,groove billed ani which has dark blue legs and feet,has dark blue legs and feet,004.Groove_billed_Ani,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,25682,groove billed ani which has white undertail coverts,has white undertail coverts,004.Groove_billed_Ani,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,25683,groove billed ani which has black wings with white patches on the edges,has black wings with white patches on the edges,004.Groove_billed_Ani,C_strip_New_prefix_X_which,
+Lexicon_attributes.csv,25731,heermanns gull which has medium-sized gull,has medium-sized gull,061.Heermann_Gull,alias,possessive/typo spelling
+Lexicon_attributes.csv,25732,heermanns gull which has white head and upper neck,has white head and upper neck,061.Heermann_Gull,alias,possessive/typo spelling
+Lexicon_attributes.csv,25733,heermanns gull which has grey back and wings,has grey back and wings,061.Heermann_Gull,alias,possessive/typo spelling
+Lexicon_attributes.csv,25734,heermanns gull which has black wingtips,has black wingtips,061.Heermann_Gull,alias,possessive/typo spelling
+Lexicon_attributes.csv,25735,heermanns gull which has yellow bill,has yellow bill,061.Heermann_Gull,alias,possessive/typo spelling
+Lexicon_attributes.csv,25736,heermanns gull which has orange legs and feet,has orange legs and feet,061.Heermann_Gull,alias,possessive/typo spelling
+Lexicon_attributes.csv,25737,heermanns gull which has red spot on the bill,has red spot on the bill,061.Heermann_Gull,alias,possessive/typo spelling
+Lexicon_attributes.csv,25738,henslows sparrow which has small songbird,has small songbird,123.Henslow_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,25739,henslows sparrow which has brown and white streaked back,has brown and white streaked back,123.Henslow_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,25740,henslows sparrow which has white or yellowish-white underside,has white or yellowish-white underside,123.Henslow_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,25741,henslows sparrow which has yellowish-white or buff eyebrow line,has yellowish-white or buff eyebrow line,123.Henslow_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,25742,henslows sparrow which has chestnut wings,has chestnut wings,123.Henslow_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,25743,henslows sparrow which has short tail with white outer feathers,has short tail with white outer feathers,123.Henslow_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,25744,henslows sparrow which has brown and white streaked head,has brown and white streaked head,123.Henslow_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,25745,henslows sparrow which has black bill,has black bill,123.Henslow_Sparrow,alias,possessive/typo spelling
+Lexicon_attributes.csv,25746,henslows sparrow which has yellowish legs,has yellowish legs,123.Henslow_Sparrow,alias,possessive/typo spelling
 Lexicon_attributes.csv,25817,house sparrow which has small bird,has small bird,118.House_Sparrow,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,25818,house sparrow which has brown and white mottled feathers,has brown and white mottled feathers,118.House_Sparrow,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,25819,house sparrow which has black and white stripes on the head,has black and white stripes on the head,118.House_Sparrow,C_strip_New_prefix_X_which,

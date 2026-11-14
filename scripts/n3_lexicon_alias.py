@@ -69,6 +69,41 @@ ALIAS_REASONS = {
     "fairchild c 26 metroliner": "military derivative of Metroliner",
 }
 
+# Reviewed CUB possessive, punctuation and typo spellings.
+# Exact aliases only; do not use substring matching.
+CUB_SPELLING_ALIASES = {
+    # New classes
+    "anna hummingbird": {"annas hummingbird"},
+    "bewick wren": {
+        "bewicks wren",
+        "bewick s wren",
+    },
+    "brandt cormorant": {"brandts cormorant"},
+    "brewer blackbird": {
+        "brewers blackbird",
+        "brewer's blackbird",
+    },
+    "brewer sparrow": {"brewers sparrow"},
+    "clark nutcracker": {"clarks nutcracker"},
+    "heermann gull": {"heermanns gull"},
+    "henslow sparrow": {"henslows sparrow"},
+    "forsters tern": {"forster s tern"},
+    "artic tern": {"arctic tern"},
+
+    # Old classes
+    "le conte sparrow": {"le contes sparrow"},
+    "lincoln sparrow": {"lincolns sparrow"},
+    "scott oriole": {"scotts oriole"},
+    "wilson warbler": {"wilsons warbler"},
+    "harris sparrow": {"harriss sparrow"},
+}
+
+for base, spellings in CUB_SPELLING_ALIASES.items():
+    CUB_ALIASES.setdefault(base, set()).update(spellings)
+
+    for spelling in spellings:
+        ALIAS_REASONS[spelling] = "possessive/typo spelling"
+
 
 def normalize(text: str) -> str:
     """Normalize dataset class names and lexicon name prefixes."""
@@ -174,7 +209,7 @@ def tag_name(prompt: str) -> str:
 
 def attr_parts(sentence: str) -> tuple[str | None, str | None]:
     """Return (normalized class prefix, description) for an 'X which Y' sentence."""
-    match = re.match(r"^\s*(.+?)\s+which\s+(.+?)\s*$", sentence, re.I)
+    match = re.match(r"^\s*(.+?)\s+which\s+(.+?)\s*$", sentence, re.I | re.S)
     if match:
         return normalize(match.group(1)), match.group(2).strip()
     return None, None
@@ -373,6 +408,8 @@ def main() -> None:
     # C: remove New class tags and strip New class prefixes from "X which Y".
     c_tags: list[str] = []
     c_removed: list[dict[str, Any]] = []
+    c_attrs: list[str] = []
+
     for line_number, tag in enumerate(tags, 1):
         key = tag_name(tag)
         if key in new_keys:
@@ -389,7 +426,6 @@ def main() -> None:
         else:
             c_tags.append(tag)
 
-        c_attrs: list[str] = []
     c_modified: list[dict[str, Any]] = []
 
     for line_number, (sentence, prefix) in enumerate(
@@ -448,11 +484,13 @@ def main() -> None:
         else:
             c_attrs.append(sentence)
 
-        # D removes all tags by definition.
+    # D removes all tags by definition.
     # Only removed attributes are logged in D/removed.csv.
     d_removed: list[dict[str, Any]] = []
     d_attrs: list[str] = []
     d_modified: list[dict[str, Any]] = []
+    d_seen: dict[str, int] = {}
+    d_duplicate_count = 0
 
     target_keys = old_keys | new_keys
 
@@ -493,6 +531,29 @@ def main() -> None:
                 "reason": "Class name remains in description",
             })
             continue
+
+        # Deduplicate D descriptions after stripping X which.
+        # Keep the first occurrence and audit later duplicates.
+        if args.d_strip_all:
+            first_line = d_seen.get(candidate)
+
+            if first_line is not None:
+                d_removed.append({
+                    "file": "Lexicon_attributes.csv",
+                    "line": line_number,
+                    "text": sentence,
+                    "matched_class": " | ".join(
+                        key_to_classes.get(prefix, [])
+                    ),
+                    "rule": "D_deduplicate_after_strip",
+                    "reason": (
+                        f"Duplicate description of source line {first_line}"
+                    ),
+                })
+                d_duplicate_count += 1
+                continue
+
+            d_seen[candidate] = line_number
 
         if should_strip:
             d_attrs.append(candidate)
@@ -570,6 +631,11 @@ def main() -> None:
         "D_removed_tags": len(tags),
         "D_removed_attributes": sum(
             row["file"] == "Lexicon_attributes.csv"
+            for row in d_removed
+        ),
+        "D_deduplicated_attributes": d_duplicate_count,
+        "D_removed_residual_attributes": sum(
+            row["rule"] == "residual_name"
             for row in d_removed
         ),
         "D_modified_attributes": len(d_modified),

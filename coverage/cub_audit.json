@@ -5,14 +5,108 @@
   "new": 100,
   "original_tags": 22131,
   "original_attributes": 34733,
-  "C_removed_tags": 75,
+  "C_removed_tags": 87,
   "C_removed_attributes": 0,
-  "C_modified_attributes": 548,
+  "C_modified_attributes": 617,
   "D_removed_tags": 22131,
-  "D_removed_attributes": 0,
-  "D_modified_attributes": 1082,
-  "D_scope": "dataset_classes_only",
+  "D_removed_attributes": 6739,
+  "D_deduplicated_attributes": 6739,
+  "D_removed_residual_attributes": 0,
+  "D_modified_attributes": 27994,
+  "D_scope": "all_attribute_prefixes",
   "approved_aliases": [
+    {
+      "class_name": "122.Harris_Sparrow",
+      "aliases": [
+        "harriss sparrow"
+      ],
+      "reasons": {
+        "harriss sparrow": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "124.Le_Conte_Sparrow",
+      "aliases": [
+        "le contes sparrow"
+      ],
+      "reasons": {
+        "le contes sparrow": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "180.Wilson_Warbler",
+      "aliases": [
+        "wilsons warbler"
+      ],
+      "reasons": {
+        "wilsons warbler": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "125.Lincoln_Sparrow",
+      "aliases": [
+        "lincolns sparrow"
+      ],
+      "reasons": {
+        "lincolns sparrow": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "098.Scott_Oriole",
+      "aliases": [
+        "scotts oriole"
+      ],
+      "reasons": {
+        "scotts oriole": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "009.Brewer_Blackbird",
+      "aliases": [
+        "brewer's blackbird",
+        "brewers blackbird"
+      ],
+      "reasons": {
+        "brewer's blackbird": "possessive/typo spelling",
+        "brewers blackbird": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "146.Forsters_Tern",
+      "aliases": [
+        "forster s tern"
+      ],
+      "reasons": {
+        "forster s tern": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "141.Artic_Tern",
+      "aliases": [
+        "arctic tern"
+      ],
+      "reasons": {
+        "arctic tern": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "115.Brewer_Sparrow",
+      "aliases": [
+        "brewers sparrow"
+      ],
+      "reasons": {
+        "brewers sparrow": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "123.Henslow_Sparrow",
+      "aliases": [
+        "henslows sparrow"
+      ],
+      "reasons": {
+        "henslows sparrow": "possessive/typo spelling"
+      }
+    },
     {
       "class_name": "105.Whip_poor_Will",
       "aliases": [
@@ -31,6 +125,53 @@
       ],
       "reasons": {
         "northern mockingbird": "only common North American mockingbird"
+      }
+    },
+    {
+      "class_name": "023.Brandt_Cormorant",
+      "aliases": [
+        "brandts cormorant"
+      ],
+      "reasons": {
+        "brandts cormorant": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "193.Bewick_Wren",
+      "aliases": [
+        "bewick s wren",
+        "bewicks wren"
+      ],
+      "reasons": {
+        "bewick s wren": "possessive/typo spelling",
+        "bewicks wren": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "067.Anna_Hummingbird",
+      "aliases": [
+        "annas hummingbird"
+      ],
+      "reasons": {
+        "annas hummingbird": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "061.Heermann_Gull",
+      "aliases": [
+        "heermanns gull"
+      ],
+      "reasons": {
+        "heermanns gull": "possessive/typo spelling"
+      }
+    },
+    {
+      "class_name": "093.Clark_Nutcracker",
+      "aliases": [
+        "clarks nutcracker"
+      ],
+      "reasons": {
+        "clarks nutcracker": "possessive/typo spelling"
       }
     },
     {
@@ -58,24 +199,19 @@
     "130.Tree_Sparrow",
     "135.Bank_Swallow",
     "027.Shiny_Cowbird",
-    "122.Harris_Sparrow",
-    "124.Le_Conte_Sparrow",
     "168.Kentucky_Warbler",
     "032.Mangrove_Cuckoo",
     "070.Green_Violetear",
     "018.Spotted_Catbird",
     "006.Least_Auklet",
-    "180.Wilson_Warbler",
     "112.Great_Grey_Shrike",
     "082.Ringed_Kingfisher",
     "024.Red_faced_Cormorant",
     "044.Frigatebird",
     "045.Northern_Fulmar",
     "001.Black_footed_Albatross",
-    "125.Lincoln_Sparrow",
     "081.Pied_Kingfisher",
     "080.Green_Kingfisher",
-    "098.Scott_Oriole",
     "145.Elegant_Tern",
     "065.Slaty_backed_Gull",
     "178.Swainson_Warbler",
@@ -83,27 +219,18 @@
     "134.Cape_Glossy_Starling",
     "083.White_breasted_Kingfisher",
     "092.Nighthawk",
-    "009.Brewer_Blackbird",
     "025.Pelagic_Cormorant",
-    "141.Artic_Tern",
-    "115.Brewer_Sparrow",
     "108.White_necked_Raven",
     "072.Pomarine_Jaeger",
     "113.Baird_Sparrow",
-    "123.Henslow_Sparrow",
     "103.Sayornis",
     "126.Nelson_Sharp_tailed_Sparrow",
     "084.Red_legged_Kittiwake",
-    "023.Brandt_Cormorant",
-    "193.Bewick_Wren",
     "074.Florida_Jay",
-    "067.Anna_Hummingbird",
     "171.Myrtle_Warbler",
     "022.Chuck_will_Widow",
     "063.Ivory_Gull",
     "003.Sooty_Albatross",
-    "061.Heermann_Gull",
-    "093.Clark_Nutcracker",
     "002.Laysan_Albatross",
     "110.Geococcyx",
     "005.Crested_Auklet",

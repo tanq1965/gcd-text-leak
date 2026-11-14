@@ -9,9 +9,11 @@
   "C_removed_attributes": 1,
   "C_modified_attributes": 401,
   "D_removed_tags": 22131,
-  "D_removed_attributes": 2,
-  "D_modified_attributes": 805,
-  "D_scope": "dataset_classes_only",
+  "D_removed_attributes": 6741,
+  "D_deduplicated_attributes": 6739,
+  "D_removed_residual_attributes": 2,
+  "D_modified_attributes": 27992,
+  "D_scope": "all_attribute_prefixes",
   "approved_aliases": [
     {
       "class_name": "747-400",

@@ -25,9 +25,9 @@ Chạy các lệnh từ thư mục gốc repository. Cần cài các dependency 
 python .\scripts\prepare_n3_names.py --cars-meta "D:\path\to\devkit\cars_meta.mat"
 
 # Tạo C/D lexicon và coverage cho cả ba dataset:
-python .\scripts\n3_lexicon_alias.py --ds cub --names names\cub.csv --tags third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs third_party\textgcd\Lexicon\Lexicon_attributes.csv --out .
-python .\scripts\n3_lexicon_alias.py --ds aircraft --names names\aircraft.csv --tags third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs third_party\textgcd\Lexicon\Lexicon_attributes.csv --out .
-python .\scripts\n3_lexicon_alias.py --ds scars --names names\scars.csv --tags third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs third_party\textgcd\Lexicon\Lexicon_attributes.csv --out .
+python .\scripts\n3_lexicon_alias.py --ds cub --names names\cub.csv --tags third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs third_party\textgcd\Lexicon\Lexicon_attributes.csv --d-strip-all --out .
+python .\scripts\n3_lexicon_alias.py --ds aircraft --names names\aircraft.csv --tags third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs third_party\textgcd\Lexicon\Lexicon_attributes.csv --d-strip-all --out .
+python .\scripts\n3_lexicon_alias.py --ds scars --names names\scars.csv --tags third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs third_party\textgcd\Lexicon\Lexicon_attributes.csv --d-strip-all --out .
 
 # Rà soát substring candidates của các lớp chưa match:
 python .\scripts\review_unmatched.py
@@ -38,6 +38,8 @@ python -m pytest -q
 # Kiểm tra trước khi commit/push (read-only):
 python .\scripts\prepush_n3_check.py
 ```
+
+Bản C loại tên lớp New theo exact matching và các alias đã được review. Bản D không dùng tag, cắt mọi tiền tố `X which` bằng `--d-strip-all`, sau đó loại các mô tả trùng chính xác và giữ bản ghi đầu tiên. Quy tắc và số liệu audit chi tiết nằm trong [docs/n3_lexicon.md](docs/n3_lexicon.md).
 
 ## File lớn
 

@@ -4,11 +4,17 @@ Lexicon_tags.csv,50,a photo of a American Goldfinch,047.American_Goldfinch,C_rem
 Lexicon_tags.csv,53,a photo of a American Pipit,104.American_Pipit,C_remove_New_tag,
 Lexicon_tags.csv,54,a photo of a American Redstart,109.American_Redstart,C_remove_New_tag,
 Lexicon_tags.csv,58,a photo of a American White Pelican,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_tags.csv,62,a photo of a Annas Hummingbird,067.Anna_Hummingbird,alias,possessive/typo spelling
+Lexicon_tags.csv,63,a photo of a Arctic Tern,141.Artic_Tern,alias,possessive/typo spelling
 Lexicon_tags.csv,75,a photo of a Belted Kingfisher,079.Belted_Kingfisher,C_remove_New_tag,
+Lexicon_tags.csv,76,a photo of a Bewicks Wren,193.Bewick_Wren,alias,possessive/typo spelling
 Lexicon_tags.csv,99,a photo of a Black throated Blue Warbler,160.Black_throated_Blue_Warbler,C_remove_New_tag,
 Lexicon_tags.csv,102,a photo of a Black throated Sparrow,114.Black_throated_Sparrow,C_remove_New_tag,
 Lexicon_tags.csv,108,a photo of a Blue headed Vireo,152.Blue_headed_Vireo,C_remove_New_tag,
 Lexicon_tags.csv,110,a photo of a Blue winged Warbler,161.Blue_winged_Warbler,C_remove_New_tag,
+Lexicon_tags.csv,116,a photo of a Brandts Cormorant,023.Brandt_Cormorant,alias,possessive/typo spelling
+Lexicon_tags.csv,118,a photo of a Brewers Blackbird,009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_tags.csv,119,a photo of a Brewers Sparrow,115.Brewer_Sparrow,alias,possessive/typo spelling
 Lexicon_tags.csv,124,a photo of a Bronzed Cowbird,026.Bronzed_Cowbird,C_remove_New_tag,
 Lexicon_tags.csv,127,a photo of a Brown Thrasher,149.Brown_Thrasher,C_remove_New_tag,
 Lexicon_tags.csv,138,a photo of a California Gull,059.California_Gull,C_remove_New_tag,
@@ -17,6 +23,7 @@ Lexicon_tags.csv,151,a photo of a Caspian Tern,143.Caspian_Tern,C_remove_New_tag
 Lexicon_tags.csv,158,a photo of a Cedar Waxwing,186.Cedar_Waxwing,C_remove_New_tag,
 Lexicon_tags.csv,162,a photo of a Chestnut sided Warbler,165.Chestnut_sided_Warbler,C_remove_New_tag,
 Lexicon_tags.csv,165,a photo of a Chipping Sparrow,116.Chipping_Sparrow,C_remove_New_tag,
+Lexicon_tags.csv,169,a photo of a Clarks Nutcracker,093.Clark_Nutcracker,alias,possessive/typo spelling
 Lexicon_tags.csv,193,a photo of a Dark eyed Junco,076.Dark_eyed_Junco,C_remove_New_tag,
 Lexicon_tags.csv,196,a photo of a Downy Woodpecker,192.Downy_Woodpecker,C_remove_New_tag,
 Lexicon_tags.csv,200,a photo of a Eared Grebe,050.Eared_Grebe,C_remove_New_tag,
@@ -32,6 +39,8 @@ Lexicon_tags.csv,234,a photo of a Grasshopper Sparrow,121.Grasshopper_Sparrow,C_
 Lexicon_tags.csv,240,a photo of a Gray crowned Rosy Finch,034.Gray_crowned_Rosy_Finch,C_remove_New_tag,
 Lexicon_tags.csv,244,a photo of a Great Crested Flycatcher,038.Great_Crested_Flycatcher,C_remove_New_tag,
 Lexicon_tags.csv,259,a photo of a Groove billed Ani,004.Groove_billed_Ani,C_remove_New_tag,
+Lexicon_tags.csv,266,a photo of a Heermanns Gull,061.Heermann_Gull,alias,possessive/typo spelling
+Lexicon_tags.csv,267,a photo of a Henslows Sparrow,123.Henslow_Sparrow,alias,possessive/typo spelling
 Lexicon_tags.csv,278,a photo of a House Sparrow,118.House_Sparrow,C_remove_New_tag,
 Lexicon_tags.csv,279,a photo of a House Wren,196.House_Wren,C_remove_New_tag,
 Lexicon_tags.csv,283,a photo of a Indigo Bunting,014.Indigo_Bunting,C_remove_New_tag,
@@ -74,3 +83,6 @@ Lexicon_tags.csv,535,a photo of a Yellow throated Vireo,157.Yellow_throated_Vire
 Lexicon_tags.csv,5666,a photo of a Cardinal,017.Cardinal,C_remove_New_tag,
 Lexicon_tags.csv,6086,a photo of a White Pelican,101.White_Pelican,C_remove_New_tag,
 Lexicon_tags.csv,6445,a photo of a Eastern Whip poor will,105.Whip_poor_Will,alias,AOU 2010 split
+Lexicon_tags.csv,6697,a photo of a Brewer's Blackbird,009.Brewer_Blackbird,alias,possessive/typo spelling
+Lexicon_tags.csv,6719,a photo of a Forster s Tern,146.Forsters_Tern,alias,possessive/typo spelling
+Lexicon_tags.csv,16162,a photo of a Bewick s Wren,193.Bewick_Wren,alias,possessive/typo spelling

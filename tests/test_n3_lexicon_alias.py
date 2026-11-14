@@ -390,3 +390,187 @@ def test_reviewed_residual_names_are_removed(
     assert audit["C_removed_attributes"] == 1
     assert audit["D_removed_attributes"] == 2
     assert audit["D_removed_tags"] == 3
+
+# Independent expectations from n3_cub_alias_list.txt (not derived from code tables).
+@pytest.mark.parametrize(
+    "base, expected",
+    [
+        ("anna hummingbird", "annas hummingbird"),
+        ("bewick wren", "bewicks wren"),
+        ("bewick wren", "bewick s wren"),
+        ("brandt cormorant", "brandts cormorant"),
+        ("brewer blackbird", "brewers blackbird"),
+        ("brewer blackbird", "brewer's blackbird"),
+        ("brewer sparrow", "brewers sparrow"),
+        ("clark nutcracker", "clarks nutcracker"),
+        ("heermann gull", "heermanns gull"),
+        ("henslow sparrow", "henslows sparrow"),
+        ("forsters tern", "forster s tern"),
+        ("artic tern", "arctic tern"),
+        ("le conte sparrow", "le contes sparrow"),
+        ("lincoln sparrow", "lincolns sparrow"),
+        ("scott oriole", "scotts oriole"),
+        ("wilson warbler", "wilsons warbler"),
+        ("harris sparrow", "harriss sparrow"),
+    ],
+)
+def test_cub_reviewed_spelling_aliases(base, expected):
+    assert expected in lexicon.aliases(base, "cub")
+    assert expected not in lexicon.aliases(base, "aircraft")
+    assert lexicon.ALIAS_REASONS[expected] == "possessive/typo spelling"
+
+
+def run_small_d_fixture(tmp_path, monkeypatch, attributes, tags=None):
+    names = tmp_path / "names.csv"
+    tags_path = tmp_path / "tags.csv"
+    attrs = tmp_path / "attrs.csv"
+    out = tmp_path / "out"
+
+    write_csv(names, [
+        ["label", "class_name", "name_norm", "is_old"],
+        ["0", "Old Class", "old class", "1"],
+        ["1", "New Class", "new class", "0"],
+    ])
+
+    if tags is None:
+        tags = ["a photo of an Old Class", "a photo of a New Class"]
+    write_csv(tags_path, [[tag] for tag in tags])
+    write_csv(attrs, [[text] for text in attributes])
+
+    monkeypatch.setattr(sys, "argv", [
+        "n3_lexicon_alias.py",
+        "--ds", "scars",
+        "--names", str(names),
+        "--tags", str(tags_path),
+        "--attrs", str(attrs),
+        "--out", str(out),
+        "--d-strip-all",
+    ])
+
+    lexicon.main()
+    return out
+
+
+def test_d_strip_all_removes_unrelated_prefixes(
+    tmp_path, monkeypatch
+):
+    out = run_small_d_fixture(
+        tmp_path,
+        monkeypatch,
+        [
+            "alder flycatcher which has green tail",
+            "another bird which has blue feathers",
+        ],
+    )
+
+    d = out / "lexicon" / "scars" / "D"
+
+    assert lexicon.read_one_column(d / "attributes.csv") == [
+        "has green tail",
+        "has blue feathers",
+    ]
+
+    assert (d / "tags.csv").read_bytes() == b""
+
+    audit = json.loads(
+        (out / "coverage" / "scars_audit.json")
+        .read_text(encoding="utf-8")
+    )
+
+    assert audit["D_scope"] == "all_attribute_prefixes"
+    assert audit["D_modified_attributes"] == 2
+
+
+def test_d_deduplicates_after_strip(
+    tmp_path, monkeypatch
+):
+    out = run_small_d_fixture(
+        tmp_path,
+        monkeypatch,
+        [
+            "alder flycatcher which has long tail",
+            "cardinal which has long tail",
+            "finch which has spotted wings",
+        ],
+    )
+
+    d = out / "lexicon" / "scars" / "D"
+
+    assert lexicon.read_one_column(d / "attributes.csv") == [
+        "has long tail",
+        "has spotted wings",
+    ]
+
+    removed = read_csv(d / "removed.csv")
+    modified = read_csv(d / "modified.csv")
+
+    assert len(removed) == 1
+    assert removed[0]["line"] == "2"
+    assert removed[0]["rule"] == "D_deduplicate_after_strip"
+    assert {row["line"] for row in modified} == {"1", "3"}
+
+    audit = json.loads(
+        (out / "coverage" / "scars_audit.json")
+        .read_text(encoding="utf-8")
+    )
+
+    assert audit["D_deduplicated_attributes"] == 1
+    assert audit["D_removed_attributes"] == 1
+    assert audit["D_modified_attributes"] == 2
+
+def test_cub_spelling_aliases_filter_new_but_keep_old(tmp_path, monkeypatch):
+    names = tmp_path / "names.csv"
+    tags = tmp_path / "tags.csv"
+    attrs = tmp_path / "attrs.csv"
+    out = tmp_path / "out"
+    write_csv(names, [
+        ["label", "class_name", "name_norm", "is_old"],
+        ["0", "122.Harris_Sparrow", "harris sparrow", "1"],
+        ["1", "146.Forsters_Tern", "forsters tern", "0"],
+        ["2", "141.Artic_Tern", "artic tern", "0"],
+    ])
+    write_csv(tags, [
+        ["a photo of a Harriss Sparrow"],
+        ["a photo of a Forster s Tern"],
+        ["a photo of a Arctic Tern"],
+        ["a photo of a Blue cardinal flower"],
+    ])
+    write_csv(attrs, [
+        ["harriss sparrow which has a long tail"],
+        ["forster s tern which has a forked tail"],
+        ["arctic tern which has pale wings"],
+    ])
+    monkeypatch.setattr(sys, "argv", [
+        "n3_lexicon_alias.py", "--ds", "cub",
+        "--names", str(names), "--tags", str(tags),
+        "--attrs", str(attrs), "--out", str(out),
+        "--d-strip-all",
+    ])
+    lexicon.main()
+    c = out / "lexicon" / "cub" / "C"
+    assert lexicon.read_one_column(c / "tags.csv") == [
+        "a photo of a Harriss Sparrow", "a photo of a Blue cardinal flower",
+    ]
+    assert lexicon.read_one_column(c / "attributes.csv") == [
+        "harriss sparrow which has a long tail",
+        "has a forked tail", "has pale wings",
+    ]
+    audit = json.loads((out / "coverage" / "cub_audit.json").read_text())
+    assert audit["C_removed_tags"] == 2
+    assert audit["C_modified_attributes"] == 2
+    assert audit["D_scope"] == "all_attribute_prefixes"
+
+
+def test_d_strip_all_handles_multiline_and_empty_tags(tmp_path, monkeypatch):
+    out = run_small_d_fixture(
+        tmp_path, monkeypatch,
+        ["blue bird which has bright\nfeathers", "has dark spots"],
+        tags=[],
+    )
+    d = out / "lexicon" / "scars" / "D"
+    assert lexicon.read_one_column(d / "attributes.csv") == [
+        "has bright\nfeathers", "has dark spots",
+    ]
+    assert (d / "tags.csv").read_bytes() == b""
+    c = out / "lexicon" / "scars" / "C"
+    assert (c / "tags.csv").read_bytes() == b""

@@ -28,6 +28,24 @@ CUB_ALIAS_CLASS_NAMES = {
     "017.Cardinal",
 }
 
+CUB_ALIAS_CLASS_NAMES.update({
+    "067.Anna_Hummingbird",
+    "193.Bewick_Wren",
+    "023.Brandt_Cormorant",
+    "009.Brewer_Blackbird",
+    "115.Brewer_Sparrow",
+    "093.Clark_Nutcracker",
+    "061.Heermann_Gull",
+    "123.Henslow_Sparrow",
+    "146.Forsters_Tern",
+    "141.Artic_Tern",
+    "124.Le_Conte_Sparrow",
+    "125.Lincoln_Sparrow",
+    "098.Scott_Oriole",
+    "180.Wilson_Warbler",
+    "122.Harris_Sparrow",
+})
+
 AIRCRAFT_ALIAS_CLASS_NAMES = {
     "A320",
     "DC-8",
@@ -82,9 +100,16 @@ def read_one_column(path: Path) -> list[str]:
 
 def git_output(root: Path, *args: str) -> tuple[int, str]:
     result = subprocess.run(
-        ["git", *args], cwd=root, capture_output=True, text=True, check=False
+        ["git", *args],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        check=False,
     )
-    return result.returncode, result.stdout.strip() or result.stderr.strip()
+    return result.returncode, (
+        result.stdout.strip() or result.stderr.strip()
+    )
 
 
 def check_dataset(root: Path, checks: Checks, dataset: str) -> None:
@@ -213,6 +238,41 @@ def check_dataset(root: Path, checks: Checks, dataset: str) -> None:
                 f"{dataset} D: removed attribute count matches audit",
             )
 
+            duplicates = [
+                row for row in removed_attrs
+                if row["rule"] == "D_deduplicate_after_strip"
+            ]
+
+            checks.require(
+                audit["D_scope"] == "all_attribute_prefixes",
+                f"{dataset} D: strip-all scope is enabled",
+            )
+
+            checks.require(
+                len(duplicates) == audit["D_deduplicated_attributes"],
+                f"{dataset} D: duplicate audit count matches JSON",
+            )
+
+            checks.require(
+                len(attr_rows) == len(set(attr_rows)),
+                f"{dataset} D: retained descriptions are unique",
+            )
+
+            checks.require(
+                all(
+                    int(row["line"]) > 0 and row["reason"].strip()
+                    for row in duplicates
+                ),
+                f"{dataset} D: duplicate removals have source and reason",
+            )
+
+            checks.require(
+                audit["D_removed_attributes"]
+                == audit["D_removed_residual_attributes"]
+                + audit["D_deduplicated_attributes"],
+                f"{dataset} D: removed attribute categories agree",
+            )
+
         checks.require(
             len(attr_rows)
             == len(source_attrs) - len(removed_attrs),
@@ -268,7 +328,7 @@ def check_dataset(root: Path, checks: Checks, dataset: str) -> None:
     if dataset == "cub":
         checks.require(
             approved == CUB_ALIAS_CLASS_NAMES,
-            "CUB audit contains all four approved alias classes",
+            "CUB audit contains all 19 approved alias classes",
         )
 
     elif dataset == "aircraft":

@@ -59,13 +59,17 @@ Dùng nguyên hai file lexicon gốc của TextGCD.
 - Nếu tên lớp New còn trong mô tả ở dòng đã review, xoá toàn bộ thuộc tính và ghi `rule=residual_name` vào `C/removed.csv`.
 - Không dùng substring matching để tự động quyết định alias.
 
-### D — Không dùng tag, loại prefix tên lớp của dataset
+### D — Không dùng tag, loại mọi prefix và bỏ thuộc tính trùng
 
-- `tags.csv` là file **0 byte** (không có dòng, không có header).
-- Với thuộc tính dạng `X which Y`, bỏ `X` nếu `X` khớp tên lớp hoặc alias của bất kỳ lớp nào thuộc dataset đang xét.
-- Prefix thuộc các lớp không thuộc dataset được giữ nguyên. Không bật `--d-strip-all` trong kết quả hiện tại.
-- Các dòng thuộc tính còn tên lớp trong mô tả đã được review sẽ bị xoá toàn bộ và ghi `rule=residual_name` vào `D/removed.csv`.
-- `D/removed.csv` chỉ liệt kê thuộc tính bị xoá; tổng số 22.131 tag bị xoá được ghi trong audit JSON.
+- `tags.csv` là file **0 byte**, không có dòng hoặc header.
+- Bật `--d-strip-all`: với mọi thuộc tính dạng `X which Y`, bỏ tiền tố `X which` và giữ mô tả `Y`, kể cả khi `X` không thuộc dataset đang xét.
+- Sau khi cắt tiền tố, loại các mô tả trùng chính xác; giữ lần xuất hiện đầu tiên theo thứ tự nguồn.
+- Các dòng bị loại vì trùng được ghi vào `D/removed.csv` với `rule=D_deduplicate_after_strip`, số dòng nguồn và lý do.
+- Các dòng còn chứa tên lớp trong mô tả đã được review được xóa toàn bộ với `rule=residual_name`.
+- `D/modified.csv` chỉ ghi những thuộc tính được sửa và thực sự giữ lại sau bước loại trùng.
+- Audit JSON ghi `D_removed_attributes`, `D_deduplicated_attributes`, `D_removed_residual_attributes` và `D_modified_attributes`.
+- `D_scope` là `all_attribute_prefixes`; số lượng 22.131 tag bị loại được ghi ở `D_removed_tags`, không liệt kê lại trong `D/removed.csv`.
+- Quy tắc này loại bỏ các prefix dạng `X which`, nhưng không chứng minh mọi tên lớp nằm sâu trong văn bản tự do đều đã biến mất.
 
 Các dòng thuộc tính đã được xác nhận cần xoá (số dòng nguồn trong `Lexicon_attributes.csv`):
 
@@ -90,11 +94,30 @@ Các alias là quy tắc so khớp **chính xác**, không phải luật chứa 
 | `091.Mockingbird` | Northern Mockingbird | `only common North American mockingbird` |
 | `101.White_Pelican` | American White Pelican | `CUB White Pelican species name` |
 | `017.Cardinal` | Northern Cardinal | `CUB Cardinal species name` |
+| `067.Anna_Hummingbird` | Annas Hummingbird | `possessive/typo spelling` |
+| `193.Bewick_Wren` | Bewicks Wren | `possessive/typo spelling` |
+| `193.Bewick_Wren` | Bewick s Wren | `possessive/typo spelling` |
+| `023.Brandt_Cormorant` | Brandts Cormorant | `possessive/typo spelling` |
+| `009.Brewer_Blackbird` | Brewers Blackbird | `possessive/typo spelling` |
+| `009.Brewer_Blackbird` | Brewer's Blackbird | `possessive/typo spelling` |
+| `115.Brewer_Sparrow` | Brewers Sparrow | `possessive/typo spelling` |
+| `093.Clark_Nutcracker` | Clarks Nutcracker | `possessive/typo spelling` |
+| `061.Heermann_Gull` | Heermanns Gull | `possessive/typo spelling` |
+| `123.Henslow_Sparrow` | Henslows Sparrow | `possessive/typo spelling` |
+| `146.Forsters_Tern` | Forster s Tern | `possessive/typo spelling` |
+| `141.Artic_Tern` | Arctic Tern | `possessive/typo spelling` |
+| `124.Le_Conte_Sparrow` | Le Contes Sparrow | `possessive/typo spelling` |
+| `125.Lincoln_Sparrow` | Lincolns Sparrow | `possessive/typo spelling` |
+| `098.Scott_Oriole` | Scotts Oriole | `possessive/typo spelling` |
+| `180.Wilson_Warbler` | Wilsons Warbler | `possessive/typo spelling` |
+| `122.Harris_Sparrow` | Harriss Sparrow | `possessive/typo spelling` |
 
 - Trong lexicon hiện tại có tag `Eastern Whip poor will`; chưa tìm thấy dòng `Mexican Whip-poor-will`. Alias Mexican vẫn được khai báo để quy tắc mapping đầy đủ.
 - `022.Chuck_will_Widow` là lớp riêng, không phải alias của `Whip_poor_Will`.
 - Các loài mockingbird khác (ví dụ Tropical, Bahama) không được gộp vào `Mockingbird`.
 - Giữ `cardinal directions` (attribute) và `Blue cardinal flower` (tag) vì khác nghĩa.
+
+Các alias bổ sung gồm 10 lớp New và 5 lớp Old (17 cách viết, thuộc 15 lớp). Các alias được duyệt theo đúng tên đầy đủ; không dùng substring matching hoặc tự động xóa dấu câu để quyết định alias.
 
 ### Aircraft
 
@@ -122,26 +145,26 @@ Coverage bên dưới được tính trên **lexicon gốc B**: một lớp đư
 
 | Dataset | Nhóm | Tag | Attribute | Either |
 |---|---|---:|---:|---:|
-| CUB | All (200) | 71.5% | 70.5% | 71.5% |
-| CUB | Old (100) | 70.0% | 69.0% | 70.0% |
-| CUB | New (100) | 73.0% | 72.0% | 73.0% |
+| CUB | All (200) | 78.5% | 77.5% | 78.5% |
+| CUB | Old (100) | 75.0% | 74.0% | 75.0% |
+| CUB | New (100) | 82.0% | 81.0% | 82.0% |
 | Aircraft | All (100) | 100.0% | 100.0% | 100.0% |
 | Stanford Cars | All (196) | 100.0% | 100.0% | 100.0% |
 
 Audit counts sau review:
 
-| Dataset | C removed tags | C removed attrs | C modified attrs | D removed tags | D removed attrs | D modified attrs |
-|---|---:|---:|---:|---:|---:|---:|
-| CUB | 75 | 0 | 548 | 22,131 | 0 | 1,082 |
-| Aircraft | 62 | 1 | 401 | 22,131 | 2 | 805 |
-| Stanford Cars | 98 | 0 | 845 | 22,131 | 0 | 1,712 |
+| Dataset | C removed tags | C removed attrs | C modified attrs | D removed tags | D removed attrs | D deduplicated attrs | D modified attrs |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| CUB | 87 | 0 | 617 | 22,131 | 6,739 | 6,739 | 27,994 |
+| Aircraft | 62 | 1 | 401 | 22,131 | 6,741 | 6,739 | 27,992 |
+| Stanford Cars | 98 | 0 | 845 | 22,131 | 6,739 | 6,739 | 27,994 |
 
-Sau alias mapping, CUB còn 57 lớp không match theo tên chính xác/alias đã duyệt. `coverage/cub_unmatched_candidates.csv` tìm thấy 3 nhóm có substring hit:
+Sau alias mapping, CUB còn 43 lớp không match theo tên chính xác/alias đã duyệt. `coverage/cub_unmatched_candidates.csv` tìm thấy 3 nhóm có substring hit:
 - `Tree_Sparrow` ↔ `American Tree Sparrow`
 - `Frigatebird` ↔ `Magnificent Frigatebird`
 - `Nighthawk` ↔ `Common Nighthawk`
 
-Đây chỉ là ứng viên để người làm đồ án xem xét; không tự động gộp vì tên gần nhau không chứng minh cùng loài. Báo cáo đầy đủ nằm ở `coverage/cub_unmatched_review.txt`. Aircraft và Stanford Cars không còn lớp unmatched theo phép so khớp hiện tại.
+Đây chỉ là ứng viên để người làm đồ án xem xét; không tự động gộp vì tên gần nhau không chứng minh cùng loài. Danh sách ứng viên cập nhật nằm ở `coverage/cub_unmatched_candidates.csv`; `coverage/cub_unmatched_review.txt` là ghi chú review thủ công. Aircraft và Stanford Cars không còn lớp unmatched theo phép so khớp hiện tại.
 
 ## 6. Đầu ra
 
@@ -171,9 +194,11 @@ lexicon/{ds}/D/
 - `*_audit.json`: số dòng đầu vào/đầu ra, mapping alias, lớp unmatched, số dòng xoá/sửa và phạm vi D.
 - `removed.csv`: các dòng bị xoá, gồm file nguồn, số dòng gốc, nội dung, lớp match và rule.
 - `modified.csv`: các dòng thuộc tính được đổi, gồm nội dung cũ/mới, lớp match và rule.
-- Riêng `D/removed.csv` chỉ giữ các dòng thuộc tính bị xoá (`residual_name`); số tag bị xoá được lưu trong `D_removed_tags` của audit JSON.
+- Riêng `D/removed.csv` ghi các thuộc tính bị xóa do `residual_name` hoặc `D_deduplicate_after_strip`; số tag bị loại được lưu trong `D_removed_tags` của audit JSON.
 
 Audit JSON sử dụng newline `\n` để kết quả tái lập nhất quán trên Windows/Linux.
+
+Audit JSON không có danh sách đầy đủ các lớp bị ảnh hưởng hoặc chỉ báo `">1/2 thuộc tính"`; xem cột `matched_class` trong `removed.csv` và `modified.csv` để truy vết các bản ghi có ánh xạ lớp.
 
 ## 7. Tái tạo
 
@@ -185,9 +210,9 @@ Chạy từ thư mục gốc repository. Cần các package trong `requirements.
 python .\scripts\prepare_n3_names.py --cars-meta "D:\path\to\devkit\cars_meta.mat"
 
 # Chạy từng dataset; --out . ghi kết quả vào coverage/ và lexicon/.
-python .\scripts\n3_lexicon_alias.py --ds cub --names .\names\cub.csv --tags .\third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs .\third_party\textgcd\Lexicon\Lexicon_attributes.csv --out .
-python .\scripts\n3_lexicon_alias.py --ds aircraft --names .\names\aircraft.csv --tags .\third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs .\third_party\textgcd\Lexicon\Lexicon_attributes.csv --out .
-python .\scripts\n3_lexicon_alias.py --ds scars --names .\names\scars.csv --tags .\third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs .\third_party\textgcd\Lexicon\Lexicon_attributes.csv --out .
+python .\scripts\n3_lexicon_alias.py --ds cub --names .\names\cub.csv --tags .\third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs .\third_party\textgcd\Lexicon\Lexicon_attributes.csv --d-strip-all --out .
+python .\scripts\n3_lexicon_alias.py --ds aircraft --names .\names\aircraft.csv --tags .\third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs .\third_party\textgcd\Lexicon\Lexicon_attributes.csv --d-strip-all --out .
+python .\scripts\n3_lexicon_alias.py --ds scars --names .\names\scars.csv --tags .\third_party\textgcd\Lexicon\Lexicon_tags.csv --attrs .\third_party\textgcd\Lexicon\Lexicon_attributes.csv --d-strip-all --out .
 
 # Sinh báo cáo substring candidates để review thủ công.
 python .\scripts\review_unmatched.py
@@ -210,6 +235,7 @@ Không sửa tay CSV đầu ra; thay đổi alias hoặc quy tắc lọc phải 
 - Các substring candidates không được tự động coi là alias.
 - Các tên dài hơn như `American Tree Sparrow`, `Common/Lesser Nighthawk`, `Magnificent Frigatebird` và các mẫu xe Old khác năm trong Cars giữ nguyên theo phạm vi đã thống nhất.
 - `North American B-45 Tornado` khác với lớp `Tornado`, không được coi là alias.
+- Loại trùng ở D chỉ dựa trên văn bản giống hệt sau khi cắt tiền tố; không gộp những câu chỉ tương đương về ngữ nghĩa.
 - Cần N2/N6 xử lý riêng danh sách tag rỗng của D như lưu ý ở mục 3.
 - N8 có thể dùng chung hàm `aliases()` của N3 để đánh giá truy xuất đúng tên lớp.
 - TextGCD upstream không có file LICENSE trong snapshot được sử dụng; provenance và ghi chú giấy phép được ghi tại `third_party/SOURCES.md`.

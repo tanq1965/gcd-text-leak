@@ -12,8 +12,8 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 10,027.Shiny_Cowbird,shiny cowbird,1,0,0,0
 11,094.White_breasted_Nuthatch,white breasted nuthatch,1,1,1,1
 12,096.Hooded_Oriole,hooded oriole,1,1,1,1
-13,122.Harris_Sparrow,harris sparrow,1,0,0,0
-14,124.Le_Conte_Sparrow,le conte sparrow,1,0,0,0
+13,122.Harris_Sparrow,harris sparrow,1,1,1,1
+14,124.Le_Conte_Sparrow,le conte sparrow,1,1,1,1
 15,100.Brown_Pelican,brown pelican,1,1,1,1
 16,150.Sage_Thrasher,sage thrasher,1,1,1,1
 17,168.Kentucky_Warbler,kentucky warbler,1,0,0,0
@@ -26,7 +26,7 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 24,127.Savannah_Sparrow,savannah sparrow,1,1,0,1
 25,018.Spotted_Catbird,spotted catbird,1,0,0,0
 26,006.Least_Auklet,least auklet,1,0,0,0
-27,180.Wilson_Warbler,wilson warbler,1,0,0,0
+27,180.Wilson_Warbler,wilson warbler,1,1,1,1
 28,112.Great_Grey_Shrike,great grey shrike,1,0,0,0
 29,164.Cerulean_Warbler,cerulean warbler,1,1,1,1
 30,185.Bohemian_Waxwing,bohemian waxwing,1,1,1,1
@@ -54,7 +54,7 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 52,142.Black_Tern,black tern,1,1,1,1
 53,191.Red_headed_Woodpecker,red headed woodpecker,1,1,1,1
 54,173.Orange_crowned_Warbler,orange crowned warbler,1,1,1,1
-55,125.Lincoln_Sparrow,lincoln sparrow,1,0,0,0
+55,125.Lincoln_Sparrow,lincoln sparrow,1,1,1,1
 56,190.Red_cockaded_Woodpecker,red cockaded woodpecker,1,1,1,1
 57,020.Yellow_breasted_Chat,yellow breasted chat,1,1,1,1
 58,081.Pied_Kingfisher,pied kingfisher,1,0,0,0
@@ -66,7 +66,7 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 64,095.Baltimore_Oriole,baltimore oriole,1,1,1,1
 65,068.Ruby_throated_Hummingbird,ruby throated hummingbird,1,1,1,1
 66,198.Rock_Wren,rock wren,1,1,1,1
-67,098.Scott_Oriole,scott oriole,1,0,0,0
+67,098.Scott_Oriole,scott oriole,1,1,1,1
 68,169.Magnolia_Warbler,magnolia warbler,1,1,1,1
 69,138.Tree_Swallow,tree swallow,1,1,1,1
 70,120.Fox_Sparrow,fox sparrow,1,1,1,1
@@ -102,7 +102,7 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 100,030.Fish_Crow,fish crow,0,1,1,1
 101,111.Loggerhead_Shrike,loggerhead shrike,0,1,1,1
 102,004.Groove_billed_Ani,groove billed ani,0,1,1,1
-103,009.Brewer_Blackbird,brewer blackbird,0,0,0,0
+103,009.Brewer_Blackbird,brewer blackbird,0,1,1,1
 104,014.Indigo_Bunting,indigo bunting,0,1,1,1
 105,059.California_Gull,california gull,0,1,1,1
 106,143.Caspian_Tern,caspian tern,0,1,1,1
@@ -112,10 +112,10 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 110,060.Glaucous_winged_Gull,glaucous winged gull,0,1,1,1
 111,066.Western_Gull,western gull,0,1,1,1
 112,025.Pelagic_Cormorant,pelagic cormorant,0,0,0,0
-113,141.Artic_Tern,artic tern,0,0,0,0
+113,141.Artic_Tern,artic tern,0,1,1,1
 114,121.Grasshopper_Sparrow,grasshopper sparrow,0,1,1,1
 115,033.Yellow_billed_Cuckoo,yellow billed cuckoo,0,1,1,1
-116,115.Brewer_Sparrow,brewer sparrow,0,0,0,0
+116,115.Brewer_Sparrow,brewer sparrow,0,1,1,1
 117,108.White_necked_Raven,white necked raven,0,0,0,0
 118,161.Blue_winged_Warbler,blue winged warbler,0,1,1,1
 119,131.Vesper_Sparrow,vesper sparrow,0,1,1,1
@@ -128,7 +128,7 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 126,157.Yellow_throated_Vireo,yellow throated vireo,0,1,1,1
 127,113.Baird_Sparrow,baird sparrow,0,0,0,0
 128,037.Acadian_Flycatcher,acadian flycatcher,0,1,1,1
-129,123.Henslow_Sparrow,henslow sparrow,0,0,0,0
+129,123.Henslow_Sparrow,henslow sparrow,0,1,1,1
 130,105.Whip_poor_Will,whip poor will,0,1,0,1
 131,103.Sayornis,sayornis,0,0,0,0
 132,091.Mockingbird,mockingbird,0,1,1,1
@@ -137,8 +137,8 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 135,196.House_Wren,house wren,0,1,1,1
 136,133.White_throated_Sparrow,white throated sparrow,0,1,1,1
 137,084.Red_legged_Kittiwake,red legged kittiwake,0,0,0,0
-138,023.Brandt_Cormorant,brandt cormorant,0,0,0,0
-139,193.Bewick_Wren,bewick wren,0,0,0,0
+138,023.Brandt_Cormorant,brandt cormorant,0,1,1,1
+139,193.Bewick_Wren,bewick wren,0,1,1,1
 140,154.Red_eyed_Vireo,red eyed vireo,0,1,1,1
 141,176.Prairie_Warbler,prairie warbler,0,1,1,1
 142,192.Downy_Woodpecker,downy woodpecker,0,1,1,1
@@ -146,7 +146,7 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 144,050.Eared_Grebe,eared grebe,0,1,1,1
 145,195.Carolina_Wren,carolina wren,0,1,1,1
 146,074.Florida_Jay,florida jay,0,0,0,0
-147,067.Anna_Hummingbird,anna hummingbird,0,0,0,0
+147,067.Anna_Hummingbird,anna hummingbird,0,1,1,1
 148,171.Myrtle_Warbler,myrtle warbler,0,0,0,0
 149,152.Blue_headed_Vireo,blue headed vireo,0,1,1,1
 150,170.Mourning_Warbler,mourning warbler,0,1,1,1
@@ -164,8 +164,8 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 162,184.Louisiana_Waterthrush,louisiana waterthrush,0,1,1,1
 163,086.Pacific_Loon,pacific loon,0,1,1,1
 164,046.Gadwall,gadwall,0,1,1,1
-165,061.Heermann_Gull,heermann gull,0,0,0,0
-166,093.Clark_Nutcracker,clark nutcracker,0,0,0,0
+165,061.Heermann_Gull,heermann gull,0,1,1,1
+166,093.Clark_Nutcracker,clark nutcracker,0,1,1,1
 167,186.Cedar_Waxwing,cedar waxwing,0,1,1,1
 168,021.Eastern_Towhee,eastern towhee,0,1,1,1
 169,160.Black_throated_Blue_Warbler,black throated blue warbler,0,1,1,1
