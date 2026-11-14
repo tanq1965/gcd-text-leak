@@ -49,6 +49,16 @@ Lexicon_tags.csv,1067,a photo of a saab 340 aircraft,Saab 340,C_remove_New_tag,
 Lexicon_tags.csv,1069,a photo of a tornado aircraft,Tornado,C_remove_New_tag,
 Lexicon_tags.csv,1070,a photo of a tu 134 aircraft,Tu-134,C_remove_New_tag,
 Lexicon_tags.csv,1071,a photo of a tu 154 aircraft,Tu-154,C_remove_New_tag,
+Lexicon_tags.csv,4624,a photo of a Airbus a320 family,A320,alias,A320 family name
+Lexicon_tags.csv,4916,a photo of a Douglas dc 8,DC-8,alias,manufacturer prefix for DC-8
+Lexicon_tags.csv,5776,a photo of a Embraer erj 145 family,ERJ 145,alias,ERJ 145 family name
+Lexicon_tags.csv,6392,a photo of a Mcdonnell douglas md 80,MD-80,alias,manufacturer prefix for MD-80
+Lexicon_tags.csv,6726,a photo of a Boeing 747 400,747-400,alias,manufacturer prefix for 747-400
+Lexicon_tags.csv,6844,a photo of a Lockheed c 130 hercules,C-130,alias,full name for C-130
+Lexicon_tags.csv,8233,a photo of a Douglas dc 6,DC-6,alias,manufacturer prefix for DC-6
 Lexicon_tags.csv,9490,a photo of a Gulfstream v,Gulfstream V,C_remove_New_tag,
+Lexicon_tags.csv,11697,a photo of a Bombardier challenger 600,Challenger 600,alias,manufacturer prefix for Challenger 600
 Lexicon_tags.csv,16856,a photo of a Fokker 70,Fokker 70,C_remove_New_tag,
+Lexicon_tags.csv,17532,a photo of a Fairchild c 26 metroliner,Metroliner,alias,military derivative of Metroliner
 Lexicon_tags.csv,17783,a photo of a Tornado,Tornado,C_remove_New_tag,
+Lexicon_attributes.csv,17747,erj 135 aircraft which has Embraer ERJ 135 aircraft,ERJ 135,residual_name,New class name remains in description

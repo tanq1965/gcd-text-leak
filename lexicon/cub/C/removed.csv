@@ -3,6 +3,7 @@ Lexicon_tags.csv,38,a photo of a Acadian Flycatcher,037.Acadian_Flycatcher,C_rem
 Lexicon_tags.csv,50,a photo of a American Goldfinch,047.American_Goldfinch,C_remove_New_tag,
 Lexicon_tags.csv,53,a photo of a American Pipit,104.American_Pipit,C_remove_New_tag,
 Lexicon_tags.csv,54,a photo of a American Redstart,109.American_Redstart,C_remove_New_tag,
+Lexicon_tags.csv,58,a photo of a American White Pelican,101.White_Pelican,alias,CUB White Pelican species name
 Lexicon_tags.csv,75,a photo of a Belted Kingfisher,079.Belted_Kingfisher,C_remove_New_tag,
 Lexicon_tags.csv,99,a photo of a Black throated Blue Warbler,160.Black_throated_Blue_Warbler,C_remove_New_tag,
 Lexicon_tags.csv,102,a photo of a Black throated Sparrow,114.Black_throated_Sparrow,C_remove_New_tag,
@@ -39,6 +40,7 @@ Lexicon_tags.csv,306,a photo of a Loggerhead Shrike,111.Loggerhead_Shrike,C_remo
 Lexicon_tags.csv,312,a photo of a Louisiana Waterthrush,184.Louisiana_Waterthrush,C_remove_New_tag,
 Lexicon_tags.csv,315,a photo of a Mallard,087.Mallard,C_remove_New_tag,
 Lexicon_tags.csv,328,a photo of a Mourning Warbler,170.Mourning_Warbler,C_remove_New_tag,
+Lexicon_tags.csv,335,a photo of a Northern Cardinal,017.Cardinal,alias,CUB Cardinal species name
 Lexicon_tags.csv,336,a photo of a Northern Flicker,036.Northern_Flicker,C_remove_New_tag,
 Lexicon_tags.csv,341,a photo of a Northern Mockingbird,091.Mockingbird,alias,only common North American mockingbird
 Lexicon_tags.csv,347,a photo of a Northern Waterthrush,183.Northern_Waterthrush,C_remove_New_tag,

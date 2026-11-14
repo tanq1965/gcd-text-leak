@@ -5,10 +5,12 @@
   "new": 100,
   "original_tags": 22131,
   "original_attributes": 34733,
-  "C_removed_tags": 73,
-  "C_modified_attributes": 533,
+  "C_removed_tags": 75,
+  "C_removed_attributes": 0,
+  "C_modified_attributes": 548,
   "D_removed_tags": 22131,
-  "D_modified_attributes": 1067,
+  "D_removed_attributes": 0,
+  "D_modified_attributes": 1082,
   "D_scope": "dataset_classes_only",
   "approved_aliases": [
     {
@@ -29,6 +31,24 @@
       ],
       "reasons": {
         "northern mockingbird": "only common North American mockingbird"
+      }
+    },
+    {
+      "class_name": "101.White_Pelican",
+      "aliases": [
+        "american white pelican"
+      ],
+      "reasons": {
+        "american white pelican": "CUB White Pelican species name"
+      }
+    },
+    {
+      "class_name": "017.Cardinal",
+      "aliases": [
+        "northern cardinal"
+      ],
+      "reasons": {
+        "northern cardinal": "CUB Cardinal species name"
       }
     }
   ],

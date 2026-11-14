@@ -34,6 +34,14 @@ Lexicon_attributes.csv,24144,american redstart which has white or grey throat an
 Lexicon_attributes.csv,24145,american redstart which has black eye and bill,has black eye and bill,109.American_Redstart,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24146,american redstart which has white belly,has white belly,109.American_Redstart,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24147,"american redstart which has long, narrow tail","has long, narrow tail",109.American_Redstart,C_strip_New_prefix_X_which,
+Lexicon_attributes.csv,24163,"american white pelican which has large, white water bird","has large, white water bird",101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24164,american white pelican which has yellow-orange beak,has yellow-orange beak,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24165,"american white pelican which has long, grey legs","has long, grey legs",101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24166,american white pelican which has large wingspan (up to 3.5 meters),has large wingspan (up to 3.5 meters),101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24167,american white pelican which has black wingtips,has black wingtips,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24168,american white pelican which has large pouch on lower beak for scooping up fish,has large pouch on lower beak for scooping up fish,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24169,american white pelican which has black eye patches,has black eye patches,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24170,american white pelican which has white head and neck,has white head and neck,101.White_Pelican,alias,CUB White Pelican species name
 Lexicon_attributes.csv,24285,belted kingfisher which has medium-sized bird,has medium-sized bird,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24286,belted kingfisher which has blue or grey upperparts,has blue or grey upperparts,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,24287,belted kingfisher which has white underparts,has white underparts,079.Belted_Kingfisher,C_strip_New_prefix_X_which,
@@ -306,6 +314,13 @@ Lexicon_attributes.csv,26178,mourning warbler which has white eyebrow,has white 
 Lexicon_attributes.csv,26179,mourning warbler which has yellowish-olive rump,has yellowish-olive rump,170.Mourning_Warbler,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,26180,mourning warbler which has male has black throat and face,has male has black throat and face,170.Mourning_Warbler,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,26181,mourning warbler which has female has streaked throat and face,has female has streaked throat and face,170.Mourning_Warbler,C_strip_New_prefix_X_which,
+Lexicon_attributes.csv,26226,northern cardinal which has medium-sized songbird,has medium-sized songbird,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26227,northern cardinal which has red feathers with black accents,has red feathers with black accents,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26228,northern cardinal which has pointed crest on the head,has pointed crest on the head,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26229,"northern cardinal which has thick, cone-shaped beak","has thick, cone-shaped beak",017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26230,northern cardinal which has yellow bill and reddish legs,has yellow bill and reddish legs,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26231,northern cardinal which has white patch on the wings,has white patch on the wings,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26232,northern cardinal which has distinctive song with a whistling quality,has distinctive song with a whistling quality,017.Cardinal,alias,CUB Cardinal species name
 Lexicon_attributes.csv,26233,northern flicker which has medium-sized bird,has medium-sized bird,036.Northern_Flicker,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,26234,northern flicker which has brown body with black barring on wings and back,has brown body with black barring on wings and back,036.Northern_Flicker,C_strip_New_prefix_X_which,
 Lexicon_attributes.csv,26235,northern flicker which has white rump patch,has white rump patch,036.Northern_Flicker,C_strip_New_prefix_X_which,

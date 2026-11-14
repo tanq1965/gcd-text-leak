@@ -21,8 +21,24 @@ EXPECTED = {
     "aircraft": (100, 50),
     "scars": (196, 98),
 }
-ALIAS_CLASS_NAMES = {"105.Whip_poor_Will", "091.Mockingbird"}
+CUB_ALIAS_CLASS_NAMES = {
+    "105.Whip_poor_Will",
+    "091.Mockingbird",
+    "101.White_Pelican",
+    "017.Cardinal",
+}
 
+AIRCRAFT_ALIAS_CLASS_NAMES = {
+    "A320",
+    "DC-8",
+    "ERJ 145",
+    "MD-80",
+    "747-400",
+    "C-130",
+    "DC-6",
+    "Challenger 600",
+    "Metroliner",
+}
 
 class Checks:
     def __init__(self) -> None:
@@ -149,46 +165,116 @@ def check_dataset(root: Path, checks: Checks, dataset: str) -> None:
         removed = read_dict_csv(removed_path)
         modified = read_dict_csv(modified_path)
 
+        removed_tags = [
+            row for row in removed
+            if row["file"] == "Lexicon_tags.csv"
+        ]
+
+        removed_attrs = [
+            row for row in removed
+            if row["file"] == "Lexicon_attributes.csv"
+        ]
+
+        checks.require(
+            len(modified) == audit[f"{version}_modified_attributes"],
+            f"{dataset} {version}: modified audit count matches JSON",
+        )
+
         if version == "C":
             checks.require(
-                len(tag_rows) == len(source_tags) - audit["C_removed_tags"],
-                f"{dataset} C: output tags equal source tags minus removals",
+                len(tag_rows)
+                == len(source_tags) - len(removed_tags)
+                and len(removed_tags) == audit["C_removed_tags"],
+                f"{dataset} C: source/output tag counts agree",
             )
+
             checks.require(
-                len(removed) == audit["C_removed_tags"]
-                and len(modified) == audit["C_modified_attributes"],
-                f"{dataset} C: removed/modified audit counts match JSON",
+                len(removed_attrs)
+                == audit["C_removed_attributes"],
+                f"{dataset} C: removed attribute count matches audit",
             )
+
         else:
             checks.require(
-                tags_path.stat().st_size == 0 and not tag_rows,
+                tags_path.stat().st_size == 0
+                and not tag_rows,
                 f"{dataset} D: tags.csv is exactly zero bytes",
             )
+
             checks.require(
-                len(removed) == len(source_tags) == audit["D_removed_tags"]
-                and len(modified) == audit["D_modified_attributes"],
-                f"{dataset} D: removed/modified audit counts match JSON",
+                not removed_tags
+                and audit["D_removed_tags"] == len(source_tags),
+                f"{dataset} D: all source tags are excluded",
+            )
+
+            checks.require(
+                len(removed_attrs)
+                == audit["D_removed_attributes"],
+                f"{dataset} D: removed attribute count matches audit",
             )
 
         checks.require(
-            len(attr_rows) == len(source_attrs),
-            f"{dataset} {version}: attributes retain all {len(source_attrs)} source rows",
+            len(attr_rows)
+            == len(source_attrs) - len(removed_attrs),
+            f"{dataset} {version}: attribute row count is correct",
         )
+
+        checks.require(
+            len(removed) == len(removed_tags) + len(removed_attrs),
+            f"{dataset} {version}: removed rows have valid file types",
+        )
+
         bad_alias_rows = [
             row
             for row in removed + modified
             if row.get("rule") == "alias" and not row.get("reason", "").strip()
         ]
+
+        residual_rows = [
+            row for row in removed
+            if row["rule"] == "residual_name"
+        ]
+
+        expected_residual = {
+            ("aircraft", "C"): {17747},
+            ("aircraft", "D"): {17585, 17747},
+        }.get((dataset, version), set())
+
+        checks.require(
+            {int(row["line"]) for row in residual_rows}
+            == expected_residual,
+            f"{dataset} {version}: residual_name source rows match review",
+        )
+
+        checks.require(
+            all(
+                row["file"] == "Lexicon_attributes.csv"
+                and row["reason"].strip()
+                for row in residual_rows
+            ),
+            f"{dataset} {version}: residual_name rows are audited",
+        )
+
         checks.require(
             not bad_alias_rows,
             f"{dataset} {version}: every alias audit row has a reason",
         )
 
+    approved = {
+        row["class_name"]
+        for row in audit.get("approved_aliases", [])
+    }
+
     if dataset == "cub":
-        approved = {row["class_name"] for row in audit.get("approved_aliases", [])}
         checks.require(
-            approved == ALIAS_CLASS_NAMES,
-            "CUB audit contains Whip-poor-will + Mockingbird mappings, not Chuck-will's-widow",
+            approved == CUB_ALIAS_CLASS_NAMES,
+            "CUB audit contains all four approved alias classes",
+        )
+
+    elif dataset == "aircraft":
+        checks.require(
+            approved == AIRCRAFT_ALIAS_CLASS_NAMES,
+            "Aircraft audit contains all nine approved alias classes",
         )
 
 
@@ -204,7 +290,12 @@ def check_git(root: Path, checks: Checks) -> None:
 
     ignore_path = root / ".gitignore"
     ignore_text = ignore_path.read_text(encoding="utf-8-sig")
-    for pattern in ("alias_test/", "backup_*/", "N3_HuongGiang_starter/", ".venv/"):
+    for pattern in (
+        "scratch/",
+        ".venv/",
+        "__pycache__/",
+        ".pytest_cache/",
+    ):
         checks.require(
             pattern in ignore_text,
             f".gitignore excludes {pattern}",

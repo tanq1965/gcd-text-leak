@@ -196,3 +196,197 @@ def test_alias_collision_is_rejected(tmp_path, monkeypatch):
     )
     with pytest.raises(ValueError, match="Ambiguous"):
         lexicon.main()
+
+@pytest.mark.parametrize(
+    "class_name, expected_alias",
+    [
+        ("A320", "airbus a320 family"),
+        ("DC-8", "douglas dc 8"),
+        ("ERJ 145", "embraer erj 145 family"),
+        ("MD-80", "mcdonnell douglas md 80"),
+        ("747-400", "boeing 747 400"),
+        ("C-130", "lockheed c 130 hercules"),
+        ("DC-6", "douglas dc 6"),
+        ("Challenger 600", "bombardier challenger 600"),
+        ("Metroliner", "fairchild c 26 metroliner"),
+    ],
+)
+def test_aircraft_reviewed_aliases(class_name, expected_alias):
+    assert expected_alias in lexicon.aliases(
+        class_name, "aircraft"
+    )
+
+
+def test_unrelated_names_are_not_aircraft_aliases():
+    assert "north american b 45 tornado" not in lexicon.aliases(
+        "Tornado", "aircraft"
+    )
+
+def test_cub_new_aliases_do_not_remove_unrelated_names(
+    tmp_path, monkeypatch
+):
+    names = tmp_path / "names.csv"
+    tags = tmp_path / "tags.csv"
+    attrs = tmp_path / "attrs.csv"
+
+    write_csv(names, [
+        ["label", "class_name", "name_norm", "is_old"],
+        ["0", "000.Old_Bird", "old bird", "1"],
+        ["1", "101.White_Pelican", "white pelican", "0"],
+        ["2", "017.Cardinal", "cardinal", "0"],
+    ])
+
+    write_csv(tags, [
+        ["a photo of a American White Pelican"],
+        ["a photo of a Northern Cardinal"],
+        ["a photo of a Blue cardinal flower"],
+    ])
+
+    write_csv(attrs, [
+        ["american white pelican which has white feathers"],
+        ["northern cardinal which has red feathers"],
+        ["cardinal directions which indicate north"],
+    ])
+
+    monkeypatch.setattr(
+        sys, "argv", [
+            "n3_lexicon_alias.py",
+            "--ds", "cub",
+            "--names", str(names),
+            "--tags", str(tags),
+            "--attrs", str(attrs),
+            "--out", str(tmp_path / "out"),
+        ]
+    )
+
+    lexicon.main()
+
+    output = tmp_path / "out" / "lexicon" / "cub" / "C"
+
+    c_tags = lexicon.read_one_column(
+        output / "tags.csv"
+    )
+    c_attrs = lexicon.read_one_column(
+        output / "attributes.csv"
+    )
+
+    assert c_tags == [
+        "a photo of a Blue cardinal flower"
+    ]
+
+    assert c_attrs == [
+        "has white feathers",
+        "has red feathers",
+        "cardinal directions which indicate north",
+    ]
+
+    removed = read_csv(output / "removed.csv")
+    modified = read_csv(output / "modified.csv")
+
+    assert len(removed) == 2
+    assert len(modified) == 2
+    assert all(row["rule"] == "alias" for row in removed)
+
+def test_reviewed_residual_names_are_removed(
+    tmp_path, monkeypatch
+):
+    names = tmp_path / "names.csv"
+    tags = tmp_path / "tags.csv"
+    attrs = tmp_path / "attrs.csv"
+
+    write_csv(names, [
+        ["label", "class_name", "name_norm", "is_old"],
+        ["0", "Cessna 172", "cessna 172", "1"],
+        ["1", "ERJ 135", "erj 135", "0"],
+        ["2", "Tornado", "tornado", "0"],
+    ])
+
+    write_csv(tags, [
+        ["a photo of a Cessna 172"],
+        ["a photo of an ERJ 135"],
+        ["a photo of a North American B-45 Tornado"],
+    ])
+
+    write_csv(attrs, [
+        ["cessna 172 which has four seats"],
+        ["cessna 172 which resembles the Cessna 172"],
+        ["erj 135 which has ERJ 135 markings"],
+        ["erj 135 which has swept wings"],
+    ])
+
+    # Test the same rules with smaller source row numbers.
+    monkeypatch.setitem(
+        lexicon.RESIDUAL_NAME_ROWS,
+        "aircraft",
+        {
+            "C": {3: "erj 135"},
+            "D": {
+                2: "cessna 172",
+                3: "erj 135",
+            },
+        },
+    )
+
+    monkeypatch.setattr(
+        sys, "argv", [
+            "n3_lexicon_alias.py",
+            "--ds", "aircraft",
+            "--names", str(names),
+            "--tags", str(tags),
+            "--attrs", str(attrs),
+            "--out", str(tmp_path / "out"),
+        ]
+    )
+
+    lexicon.main()
+
+    output = tmp_path / "out" / "lexicon" / "aircraft"
+
+    c_tags = lexicon.read_one_column(
+        output / "C" / "tags.csv"
+    )
+    assert "a photo of a North American B-45 Tornado" in c_tags
+    assert "a photo of an ERJ 135" not in c_tags
+
+    c_attrs = lexicon.read_one_column(
+        output / "C" / "attributes.csv"
+    )
+    assert len(c_attrs) == 3
+    assert "has swept wings" in c_attrs
+
+    d_attrs = lexicon.read_one_column(
+        output / "D" / "attributes.csv"
+    )
+    assert d_attrs == [
+        "has four seats",
+        "has swept wings",
+    ]
+
+    c_removed = read_csv(output / "C" / "removed.csv")
+    d_removed = read_csv(output / "D" / "removed.csv")
+
+    c_residual = [
+        row for row in c_removed
+        if row["rule"] == "residual_name"
+    ]
+    d_residual = [
+        row for row in d_removed
+        if row["rule"] == "residual_name"
+    ]
+
+    assert {row["line"] for row in c_residual} == {"3"}
+    assert {row["line"] for row in d_residual} == {"2", "3"}
+
+    assert all(
+        row["file"] == "Lexicon_attributes.csv"
+        for row in c_residual + d_residual
+    )
+
+    audit = json.loads(
+        (tmp_path / "out" / "coverage" / "aircraft_audit.json")
+        .read_text(encoding="utf-8")
+    )
+
+    assert audit["C_removed_attributes"] == 1
+    assert audit["D_removed_attributes"] == 2
+    assert audit["D_removed_tags"] == 3

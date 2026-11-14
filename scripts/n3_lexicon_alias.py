@@ -20,7 +20,9 @@ from typing import Any
 
 NEEDED = ("label", "class_name", "name_norm", "is_old")
 
-# Confirmed by Tân on 2026-11-12. These are exact aliases, not substring rules.
+# Exact aliases approved in N3 review.
+# Do not replace exact matching with substring matching.
+
 CUB_ALIASES = {
     "whip poor will": {
         "eastern whip poor will",
@@ -29,11 +31,42 @@ CUB_ALIASES = {
     "mockingbird": {
         "northern mockingbird",
     },
+    "white pelican": {
+        "american white pelican",
+    },
+    "cardinal": {
+        "northern cardinal",
+    },
 }
+
+AIRCRAFT_ALIASES = {
+    "a320": {"airbus a320 family"},
+    "dc 8": {"douglas dc 8"},
+    "erj 145": {"embraer erj 145 family"},
+    "md 80": {"mcdonnell douglas md 80"},
+    "747 400": {"boeing 747 400"},
+    "c 130": {"lockheed c 130 hercules"},
+    "dc 6": {"douglas dc 6"},
+    "challenger 600": {"bombardier challenger 600"},
+    "metroliner": {"fairchild c 26 metroliner"},
+}
+
 ALIAS_REASONS = {
     "eastern whip poor will": "AOU 2010 split",
     "mexican whip poor will": "AOU 2010 split",
     "northern mockingbird": "only common North American mockingbird",
+    "american white pelican": "CUB White Pelican species name",
+    "northern cardinal": "CUB Cardinal species name",
+
+    "airbus a320 family": "A320 family name",
+    "douglas dc 8": "manufacturer prefix for DC-8",
+    "embraer erj 145 family": "ERJ 145 family name",
+    "mcdonnell douglas md 80": "manufacturer prefix for MD-80",
+    "boeing 747 400": "manufacturer prefix for 747-400",
+    "lockheed c 130 hercules": "full name for C-130",
+    "douglas dc 6": "manufacturer prefix for DC-6",
+    "bombardier challenger 600": "manufacturer prefix for Challenger 600",
+    "fairchild c 26 metroliner": "military derivative of Metroliner",
 }
 
 
@@ -45,15 +78,21 @@ def normalize(text: str) -> str:
 
 
 def aliases(name: str, ds: str) -> set[str]:
-    """Return the normalized class name plus explicitly approved exact aliases."""
+    """Return exact normalized names and review-approved aliases."""
     base = normalize(name)
     result = {base}
+
     if ds == "aircraft":
         result.add(base + " aircraft")
+
         if base.endswith(" aircraft"):
             result.add(base.removesuffix(" aircraft").strip())
+
+        result.update(AIRCRAFT_ALIASES.get(base, set()))
+
     elif ds == "cub":
         result.update(CUB_ALIASES.get(base, set()))
+
     return {item for item in result if item}
 
 
@@ -140,22 +179,91 @@ def attr_parts(sentence: str) -> tuple[str | None, str | None]:
         return normalize(match.group(1)), match.group(2).strip()
     return None, None
 
+# Original source row numbers reviewed by Tan.
+RESIDUAL_NAME_ROWS = {
+    "aircraft": {
+        "C": {
+            17747: "erj 135",
+        },
+        "D": {
+            17585: "cessna 172",
+            17747: "erj 135",
+        },
+    },
+}
 
-def alias_audit(classes: list[dict[str, Any]], ds: str) -> list[dict[str, Any]]:
+
+def contains_exact_name(text: str, name: str) -> bool:
+    """Match a complete normalized name, not an arbitrary substring."""
+    normalized_text = re.sub(
+        r"[^a-z0-9]+", " ", text.casefold()
+    ).strip()
+
+    normalized_name = re.sub(
+        r"[^a-z0-9]+", " ", name.casefold()
+    ).strip()
+
+    return (
+        f" {normalized_name} "
+        in f" {normalized_text} "
+    )
+
+
+def residual_name(
+    ds: str,
+    version: str,
+    source_line: int,
+    processed_text: str,
+) -> str | None:
+    """Return a reviewed residual name; fail if source changed."""
+    reviewed = (
+        RESIDUAL_NAME_ROWS
+        .get(ds, {})
+        .get(version, {})
+    )
+
+    name = reviewed.get(source_line)
+
+    if name is None:
+        return None
+
+    if not contains_exact_name(processed_text, name):
+        raise ValueError(
+            f"{ds}/{version}: source line {source_line} "
+            f"no longer contains reviewed residual name {name!r}. "
+            "Inspect the source before changing the rule."
+        )
+
+    return name
+
+
+def alias_audit(
+    classes: list[dict[str, Any]],
+    ds: str,
+) -> list[dict[str, Any]]:
     rows = []
-    if ds != "cub":
-        return rows
+
+    if ds == "cub":
+        alias_map = CUB_ALIASES
+    elif ds == "aircraft":
+        alias_map = AIRCRAFT_ALIASES
+    else:
+        alias_map = {}
+
     for class_row in classes:
         base = class_row["name_norm"]
-        approved = sorted(CUB_ALIASES.get(base, set()))
+        approved = sorted(alias_map.get(base, set()))
+
         if approved:
-            rows.append(
-                {
-                    "class_name": class_row["class_name"],
-                    "aliases": approved,
-                    "reasons": {alias: ALIAS_REASONS[alias] for alias in approved},
-                }
-            )
+            rows.append({
+                "class_name": class_row["class_name"],
+                "aliases": approved,
+                "reasons": {
+                    alias: ALIAS_REASONS[alias]
+                    for alias in approved
+                },
+            })
+
     return rows
 
 
@@ -281,71 +389,133 @@ def main() -> None:
         else:
             c_tags.append(tag)
 
-    c_attrs: list[str] = []
+        c_attrs: list[str] = []
     c_modified: list[dict[str, Any]] = []
-    for line_number, (sentence, prefix) in enumerate(zip(attrs, attr_prefixes), 1):
-        if prefix in new_keys:
+
+    for line_number, (sentence, prefix) in enumerate(
+        zip(attrs, attr_prefixes), 1
+    ):
+        is_new_prefix = prefix in new_keys
+
+        if is_new_prefix:
             _, description = attr_parts(sentence)
+
             if not description:
-                raise ValueError(f"Could not strip class prefix in attribute line {line_number}")
-            c_attrs.append(description)
-            c_modified.append(
-                {
-                    "file": "Lexicon_attributes.csv",
-                    "line": line_number,
-                    "text": sentence,
-                    "new_text": description,
-                    "matched_class": " | ".join(key_to_classes[prefix]),
-                    "rule": (
-                        "alias" if prefix in ALIAS_REASONS else "C_strip_New_prefix_X_which"
-                    ),
-                    "reason": ALIAS_REASONS.get(prefix, ""),
-                }
-            )
+                raise ValueError(
+                    f"Could not strip class prefix at line {line_number}"
+                )
+
+            candidate = description
+        else:
+            candidate = sentence
+
+        # Remove reviewed residual-name attributes.
+        residual = residual_name(
+            args.ds, "C", line_number, candidate
+        )
+
+        if residual is not None:
+            c_removed.append({
+                "file": "Lexicon_attributes.csv",
+                "line": line_number,
+                "text": sentence,
+                "matched_class": " | ".join(
+                    key_to_classes[residual]
+                ),
+                "rule": "residual_name",
+                "reason": "New class name remains in description",
+            })
+            continue
+
+        if is_new_prefix:
+            c_attrs.append(candidate)
+
+            c_modified.append({
+                "file": "Lexicon_attributes.csv",
+                "line": line_number,
+                "text": sentence,
+                "new_text": candidate,
+                "matched_class": " | ".join(
+                    key_to_classes[prefix]
+                ),
+                "rule": (
+                    "alias"
+                    if prefix in ALIAS_REASONS
+                    else "C_strip_New_prefix_X_which"
+                ),
+                "reason": ALIAS_REASONS.get(prefix, ""),
+            })
         else:
             c_attrs.append(sentence)
 
-    # D: remove every tag and strip class prefixes for every dataset class.
-    # Unrelated lexicon-class prefixes remain unless --d-strip-all is explicitly selected.
-    d_removed = [
-        {
-            "file": "Lexicon_tags.csv",
-            "line": line_number,
-            "text": tag,
-            "matched_class": "",
-            "rule": "D_remove_all_tags",
-            "reason": "",
-        }
-        for line_number, tag in enumerate(tags, 1)
-    ]
+        # D removes all tags by definition.
+    # Only removed attributes are logged in D/removed.csv.
+    d_removed: list[dict[str, Any]] = []
     d_attrs: list[str] = []
     d_modified: list[dict[str, Any]] = []
+
     target_keys = old_keys | new_keys
-    for line_number, (sentence, prefix) in enumerate(zip(attrs, attr_prefixes), 1):
-        if prefix is not None and (args.d_strip_all or prefix in target_keys):
+
+    for line_number, (sentence, prefix) in enumerate(
+        zip(attrs, attr_prefixes), 1
+    ):
+        should_strip = (
+            prefix is not None
+            and (args.d_strip_all or prefix in target_keys)
+        )
+
+        if should_strip:
             _, description = attr_parts(sentence)
+
             if not description:
-                raise ValueError(f"Could not strip class prefix in attribute line {line_number}")
-            d_attrs.append(description)
-            d_modified.append(
-                {
-                    "file": "Lexicon_attributes.csv",
-                    "line": line_number,
-                    "text": sentence,
-                    "new_text": description,
-                    "matched_class": " | ".join(key_to_classes.get(prefix, [])),
-                    "rule": (
-                        "alias"
-                        if prefix in ALIAS_REASONS
-                        else (
-                            "D_strip_all_X_which"
-                            if args.d_strip_all
-                            else "D_strip_dataset_X_which"
-                        )
-                    ),
-                    "reason": ALIAS_REASONS.get(prefix, ""),
-                }
-            )
+                raise ValueError(
+                    f"Could not strip class prefix at line {line_number}"
+                )
+
+            candidate = description
+        else:
+            candidate = sentence
+
+        # Remove reviewed residual-name attributes.
+        residual = residual_name(
+            args.ds, "D", line_number, candidate
+        )
+
+        if residual is not None:
+            d_removed.append({
+                "file": "Lexicon_attributes.csv",
+                "line": line_number,
+                "text": sentence,
+                "matched_class": " | ".join(
+                    key_to_classes[residual]
+                ),
+                "rule": "residual_name",
+                "reason": "Class name remains in description",
+            })
+            continue
+
+        if should_strip:
+            d_attrs.append(candidate)
+
+            d_modified.append({
+                "file": "Lexicon_attributes.csv",
+                "line": line_number,
+                "text": sentence,
+                "new_text": candidate,
+                "matched_class": " | ".join(
+                    key_to_classes.get(prefix, [])
+                ),
+                "rule": (
+                    "alias"
+                    if prefix in ALIAS_REASONS
+                    else (
+                        "D_strip_all_X_which"
+                        if args.d_strip_all
+                        else "D_strip_dataset_X_which"
+                    )
+                ),
+                "reason": ALIAS_REASONS.get(prefix, ""),
+            })
         else:
             d_attrs.append(sentence)
 
@@ -387,9 +557,21 @@ def main() -> None:
         "new": sum(not bool(row["is_old"]) for row in classes),
         "original_tags": len(tags),
         "original_attributes": len(attrs),
-        "C_removed_tags": len(c_removed),
+        "C_removed_tags": sum(
+            row["file"] == "Lexicon_tags.csv"
+            for row in c_removed
+        ),
+        "C_removed_attributes": sum(
+            row["file"] == "Lexicon_attributes.csv"
+            for row in c_removed
+        ),
         "C_modified_attributes": len(c_modified),
-        "D_removed_tags": len(d_removed),
+
+        "D_removed_tags": len(tags),
+        "D_removed_attributes": sum(
+            row["file"] == "Lexicon_attributes.csv"
+            for row in d_removed
+        ),
         "D_modified_attributes": len(d_modified),
         "D_scope": "all_attribute_prefixes" if args.d_strip_all else "dataset_classes_only",
         "approved_aliases": alias_audit(classes, args.ds),
@@ -403,9 +585,18 @@ def main() -> None:
     }
     audit_path = coverage_root / f"{args.ds}_audit.json"
     audit_path.parent.mkdir(parents=True, exist_ok=True)
-    audit_path.write_text(
-        json.dumps(audit, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    with audit_path.open(
+        "w",
+        encoding="utf-8",
+        newline="\n",
+    ) as handle:
+        handle.write(
+            json.dumps(
+                audit,
+                ensure_ascii=False,
+                indent=2,
+            ) + "\n"
+        )
     print(json.dumps({"summary": summary, "audit": audit}, ensure_ascii=False, indent=2))
 
 

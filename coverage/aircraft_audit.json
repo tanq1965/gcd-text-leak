@@ -5,12 +5,96 @@
   "new": 50,
   "original_tags": 22131,
   "original_attributes": 34733,
-  "C_removed_tags": 53,
-  "C_modified_attributes": 402,
+  "C_removed_tags": 62,
+  "C_removed_attributes": 1,
+  "C_modified_attributes": 401,
   "D_removed_tags": 22131,
-  "D_modified_attributes": 807,
+  "D_removed_attributes": 2,
+  "D_modified_attributes": 805,
   "D_scope": "dataset_classes_only",
-  "approved_aliases": [],
+  "approved_aliases": [
+    {
+      "class_name": "747-400",
+      "aliases": [
+        "boeing 747 400"
+      ],
+      "reasons": {
+        "boeing 747 400": "manufacturer prefix for 747-400"
+      }
+    },
+    {
+      "class_name": "A320",
+      "aliases": [
+        "airbus a320 family"
+      ],
+      "reasons": {
+        "airbus a320 family": "A320 family name"
+      }
+    },
+    {
+      "class_name": "Challenger 600",
+      "aliases": [
+        "bombardier challenger 600"
+      ],
+      "reasons": {
+        "bombardier challenger 600": "manufacturer prefix for Challenger 600"
+      }
+    },
+    {
+      "class_name": "DC-6",
+      "aliases": [
+        "douglas dc 6"
+      ],
+      "reasons": {
+        "douglas dc 6": "manufacturer prefix for DC-6"
+      }
+    },
+    {
+      "class_name": "DC-8",
+      "aliases": [
+        "douglas dc 8"
+      ],
+      "reasons": {
+        "douglas dc 8": "manufacturer prefix for DC-8"
+      }
+    },
+    {
+      "class_name": "ERJ 145",
+      "aliases": [
+        "embraer erj 145 family"
+      ],
+      "reasons": {
+        "embraer erj 145 family": "ERJ 145 family name"
+      }
+    },
+    {
+      "class_name": "MD-80",
+      "aliases": [
+        "mcdonnell douglas md 80"
+      ],
+      "reasons": {
+        "mcdonnell douglas md 80": "manufacturer prefix for MD-80"
+      }
+    },
+    {
+      "class_name": "C-130",
+      "aliases": [
+        "lockheed c 130 hercules"
+      ],
+      "reasons": {
+        "lockheed c 130 hercules": "full name for C-130"
+      }
+    },
+    {
+      "class_name": "Metroliner",
+      "aliases": [
+        "fairchild c 26 metroliner"
+      ],
+      "reasons": {
+        "fairchild c 26 metroliner": "military derivative of Metroliner"
+      }
+    }
+  ],
   "unmatched_classes": [],
   "review_note": "Unmatched classes require manual review; substring candidates are leads, not approved aliases. Checks do not detect every embedded name in free text."
 }

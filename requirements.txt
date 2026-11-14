@@ -10,3 +10,4 @@ ftfy
 regex
 tqdm
 pytest
+matplotlib

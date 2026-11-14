@@ -1,8 +1,5 @@
-# Nháp và output debug
+# Temporary scratch outputs
 scratch/
-alias_test/
-backup_*/
-N3_HuongGiang_starter/
 
 # Local Python environments and caches
 .venv/
@@ -11,11 +8,6 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 *.egg-info/
-
-# One-time local patch/backup helpers (not project deliverables)
-apply_n3_alias_patch.py
-n3_lexicon_alias_before_patch.py
-review_cub_unmatched.py
 
 # Dữ liệu lớn, không commit (để Kaggle/Drive, README ghi link)
 rtg/

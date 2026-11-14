@@ -57,6 +57,14 @@ Lexicon_attributes.csv,24151,american three toed woodpecker which has black beak
 Lexicon_attributes.csv,24152,american three toed woodpecker which has white eye-ring,has white eye-ring,187.American_Three_toed_Woodpecker,D_strip_dataset_X_which,
 Lexicon_attributes.csv,24153,american three toed woodpecker which has three toes on each foot,has three toes on each foot,187.American_Three_toed_Woodpecker,D_strip_dataset_X_which,
 Lexicon_attributes.csv,24154,american three toed woodpecker which is a white stripe on each side of the neck,is a white stripe on each side of the neck,187.American_Three_toed_Woodpecker,D_strip_dataset_X_which,
+Lexicon_attributes.csv,24163,"american white pelican which has large, white water bird","has large, white water bird",101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24164,american white pelican which has yellow-orange beak,has yellow-orange beak,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24165,"american white pelican which has long, grey legs","has long, grey legs",101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24166,american white pelican which has large wingspan (up to 3.5 meters),has large wingspan (up to 3.5 meters),101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24167,american white pelican which has black wingtips,has black wingtips,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24168,american white pelican which has large pouch on lower beak for scooping up fish,has large pouch on lower beak for scooping up fish,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24169,american white pelican which has black eye patches,has black eye patches,101.White_Pelican,alias,CUB White Pelican species name
+Lexicon_attributes.csv,24170,american white pelican which has white head and neck,has white head and neck,101.White_Pelican,alias,CUB White Pelican species name
 Lexicon_attributes.csv,24231,baltimore oriole which has small songbird,has small songbird,095.Baltimore_Oriole,D_strip_dataset_X_which,
 Lexicon_attributes.csv,24232,"baltimore oriole which has bright orange breast, wings and tail","has bright orange breast, wings and tail",095.Baltimore_Oriole,D_strip_dataset_X_which,
 Lexicon_attributes.csv,24233,"baltimore oriole which has black crown, back and face","has black crown, back and face",095.Baltimore_Oriole,D_strip_dataset_X_which,
@@ -620,6 +628,13 @@ Lexicon_attributes.csv,26198,nashville warbler which has dark line through the e
 Lexicon_attributes.csv,26199,"nashville warbler which has thin, pointed bill","has thin, pointed bill",172.Nashville_Warbler,D_strip_dataset_X_which,
 Lexicon_attributes.csv,26200,nashville warbler which has black-and-white streaked breast,has black-and-white streaked breast,172.Nashville_Warbler,D_strip_dataset_X_which,
 Lexicon_attributes.csv,26201,nashville warbler which has white undertail coverts,has white undertail coverts,172.Nashville_Warbler,D_strip_dataset_X_which,
+Lexicon_attributes.csv,26226,northern cardinal which has medium-sized songbird,has medium-sized songbird,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26227,northern cardinal which has red feathers with black accents,has red feathers with black accents,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26228,northern cardinal which has pointed crest on the head,has pointed crest on the head,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26229,"northern cardinal which has thick, cone-shaped beak","has thick, cone-shaped beak",017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26230,northern cardinal which has yellow bill and reddish legs,has yellow bill and reddish legs,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26231,northern cardinal which has white patch on the wings,has white patch on the wings,017.Cardinal,alias,CUB Cardinal species name
+Lexicon_attributes.csv,26232,northern cardinal which has distinctive song with a whistling quality,has distinctive song with a whistling quality,017.Cardinal,alias,CUB Cardinal species name
 Lexicon_attributes.csv,26233,northern flicker which has medium-sized bird,has medium-sized bird,036.Northern_Flicker,D_strip_dataset_X_which,
 Lexicon_attributes.csv,26234,northern flicker which has brown body with black barring on wings and back,has brown body with black barring on wings and back,036.Northern_Flicker,D_strip_dataset_X_which,
 Lexicon_attributes.csv,26235,northern flicker which has white rump patch,has white rump patch,036.Northern_Flicker,D_strip_dataset_X_which,

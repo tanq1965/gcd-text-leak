@@ -190,12 +190,12 @@ label,class_name,name_norm,is_old,in_tag,in_attribute,in_either
 188,076.Dark_eyed_Junco,dark eyed junco,0,1,1,1
 189,189.Red_bellied_Woodpecker,red bellied woodpecker,0,1,1,1
 190,188.Pileated_Woodpecker,pileated woodpecker,0,1,1,1
-191,101.White_Pelican,white pelican,0,1,0,1
+191,101.White_Pelican,white pelican,0,1,1,1
 192,048.European_Goldfinch,european goldfinch,0,0,0,0
 193,106.Horned_Puffin,horned puffin,0,0,0,0
 194,042.Vermilion_Flycatcher,vermilion flycatcher,0,1,1,1
 195,087.Mallard,mallard,0,1,1,1
-196,017.Cardinal,cardinal,0,1,0,1
+196,017.Cardinal,cardinal,0,1,1,1
 197,055.Evening_Grosbeak,evening grosbeak,0,1,1,1
 198,140.Summer_Tanager,summer tanager,0,1,1,1
 199,139.Scarlet_Tanager,scarlet tanager,0,1,1,1
