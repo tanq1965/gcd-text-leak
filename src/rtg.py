@@ -73,10 +73,16 @@ def lexicon_paths(ver: str, ds: str, lexicon_root: str | Path = REPO_ROOT / "lex
     return base / "tags.csv", base / "attributes.csv"
 
 
-def cache_path(cache_dir: str | Path, lexicon_file: str | Path, sha: str, model_name: str) -> Path:
+def cache_path(cache_dir: str | Path, lexicon_file: str | Path, sha: str, model_name: str,
+               precision: str = "fp32") -> Path:
     model_slug = hashlib.sha256(model_name.encode()).hexdigest()[:8]
     stem = Path(lexicon_file).stem
-    return Path(cache_dir) / f"{stem}_{sha[:12]}_{model_slug}.pt"
+    return Path(cache_dir) / f"{stem}_{sha[:12]}_{model_slug}_{precision}.pt"
+
+
+def model_precision(model: torch.nn.Module) -> str:
+    """'fp16' if the model runs in half precision, else 'fp32' (part of the cache key)."""
+    return "fp16" if next(model.parameters()).dtype == torch.float16 else "fp32"
 
 
 # --------------------------------------------------------------------------- encoding
@@ -111,13 +117,18 @@ def load_or_encode(
     cache_dir: str | Path,
     device: torch.device,
 ) -> torch.Tensor:
-    """Load cached lexicon embeddings if the sidecar matches (sha256, model, rows), else encode."""
+    """Load cached lexicon embeddings if the sidecar matches (sha256, model, precision, rows), else encode.
+
+    The encoding precision (fp16/fp32) is part of the key, so an fp32 run never reuses
+    embeddings computed in fp16. Embeddings are stored as float32 on disk.
+    """
     if not texts:
         return torch.zeros((0, 0))
     sha = file_sha256(lexicon_file)
-    path = cache_path(cache_dir, lexicon_file, sha, model_name)
+    precision = model_precision(model)
+    path = cache_path(cache_dir, lexicon_file, sha, model_name, precision)
     meta_path = path.with_suffix(".json")
-    expected = {"lexicon_sha256": sha, "model": model_name, "rows": len(texts)}
+    expected = {"lexicon_sha256": sha, "model": model_name, "precision": precision, "rows": len(texts)}
     if path.exists() and meta_path.exists():
         meta = json.loads(meta_path.read_text(encoding="utf-8"))
         if {k: meta.get(k) for k in expected} != expected:
@@ -127,7 +138,7 @@ def load_or_encode(
             raise ValueError(f"cache {path} has {feats.shape[0]} rows, lexicon has {len(texts)}")
         print(f"Loaded cached embeddings {path}")
         return feats
-    feats = encode_texts(model, tokenize, texts, device)
+    feats = encode_texts(model, tokenize, texts, device).float()
     path.parent.mkdir(parents=True, exist_ok=True)
     torch.save(feats, path)
     meta_path.write_text(json.dumps({**expected, "lexicon_file": str(lexicon_file)}, indent=2), encoding="utf-8")

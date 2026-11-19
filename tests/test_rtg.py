@@ -66,12 +66,27 @@ def test_cache_is_keyed_by_lexicon_content(tmp_path):
     assert not torch.equal(f1, f2)
     assert len(list(cache.glob("*.pt"))) == 2
     # tampered sidecar must be rejected, not silently reused
-    pt = rtg.cache_path(cache, lex, rtg.file_sha256(lex), "m")
+    pt = rtg.cache_path(cache, lex, rtg.file_sha256(lex), "m", "fp32")
     meta = json.loads(pt.with_suffix(".json").read_text())
     meta["rows"] = 99
     pt.with_suffix(".json").write_text(json.dumps(meta))
     with pytest.raises(ValueError):
         rtg.load_or_encode(model, fake_tokenize, lex, ["s 2", "s 3"], "m", cache, torch.device("cpu"))
+
+
+def test_cache_separates_fp16_and_fp32(tmp_path):
+    lex = tmp_path / "attributes.csv"
+    write_lexicon(lex, ["s 0", "s 1"])
+    cache = tmp_path / "cache"
+    model = FakeClip()
+    rtg.load_or_encode(model, fake_tokenize, lex, ["s 0", "s 1"], "m", cache, torch.device("cpu"))
+    model.half()
+    rtg.load_or_encode(model, fake_tokenize, lex, ["s 0", "s 1"], "m", cache, torch.device("cpu"))
+    names = sorted(p.name for p in cache.glob("*.pt"))
+    assert len(names) == 2 and names[0].endswith("_fp16.pt") and names[1].endswith("_fp32.pt")
+    for p in cache.glob("*.pt"):
+        assert torch.load(p).dtype == torch.float32          # stored as fp32 on disk
+        assert json.loads(p.with_suffix(".json").read_text())["precision"] in ("fp16", "fp32")
 
 
 def make_split(tmp_path, n=3):
