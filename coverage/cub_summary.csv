@@ -1,0 +1,4 @@
+group,classes,in_tag,tag_pct,in_attribute,attribute_pct,in_either,either_pct
+All,200,157,78.5,155,77.5,157,78.5
+Old,100,75,75.0,74,74.0,75,75.0
+New,100,82,82.0,81,81.0,82,82.0
