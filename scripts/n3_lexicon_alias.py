@@ -49,6 +49,15 @@ AIRCRAFT_ALIASES = {
     "dc 6": {"douglas dc 6"},
     "challenger 600": {"bombardier challenger 600"},
     "metroliner": {"fairchild c 26 metroliner"},
+    # Added after N8 review: full manufacturer names of Old classes found in Lexicon_tags.csv.
+    # Scan of all tags containing an Aircraft class name; rejected: "triumph spitfire" and
+    # "alpine a310" (cars), "north american b 45 tornado" (different aircraft).
+    "a380": {"airbus a380"},
+    "c 47": {"douglas c 47 skytrain"},
+    "dc 10": {"mcdonnell douglas dc 10"},
+    "dc 3": {"douglas dc 3"},
+    "f/a 18": {"mcdonnell douglas f/a 18 hornet"},
+    "spitfire": {"supermarine spitfire"},
 }
 
 ALIAS_REASONS = {
@@ -67,6 +76,12 @@ ALIAS_REASONS = {
     "douglas dc 6": "manufacturer prefix for DC-6",
     "bombardier challenger 600": "manufacturer prefix for Challenger 600",
     "fairchild c 26 metroliner": "military derivative of Metroliner",
+    "airbus a380": "manufacturer prefix for A380",
+    "douglas c 47 skytrain": "manufacturer prefix and official name for C-47",
+    "mcdonnell douglas dc 10": "manufacturer prefix for DC-10",
+    "douglas dc 3": "manufacturer prefix for DC-3",
+    "mcdonnell douglas f/a 18 hornet": "manufacturer prefix and official name for F/A-18",
+    "supermarine spitfire": "manufacturer prefix for Spitfire",
 }
 
 # Reviewed CUB possessive, punctuation and typo spellings.

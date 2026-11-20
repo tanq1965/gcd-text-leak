@@ -16,6 +16,60 @@
   "D_scope": "all_attribute_prefixes",
   "approved_aliases": [
     {
+      "class_name": "A380",
+      "aliases": [
+        "airbus a380"
+      ],
+      "reasons": {
+        "airbus a380": "manufacturer prefix for A380"
+      }
+    },
+    {
+      "class_name": "C-47",
+      "aliases": [
+        "douglas c 47 skytrain"
+      ],
+      "reasons": {
+        "douglas c 47 skytrain": "manufacturer prefix and official name for C-47"
+      }
+    },
+    {
+      "class_name": "DC-10",
+      "aliases": [
+        "mcdonnell douglas dc 10"
+      ],
+      "reasons": {
+        "mcdonnell douglas dc 10": "manufacturer prefix for DC-10"
+      }
+    },
+    {
+      "class_name": "DC-3",
+      "aliases": [
+        "douglas dc 3"
+      ],
+      "reasons": {
+        "douglas dc 3": "manufacturer prefix for DC-3"
+      }
+    },
+    {
+      "class_name": "F/A-18",
+      "aliases": [
+        "mcdonnell douglas f/a 18 hornet"
+      ],
+      "reasons": {
+        "mcdonnell douglas f/a 18 hornet": "manufacturer prefix and official name for F/A-18"
+      }
+    },
+    {
+      "class_name": "Spitfire",
+      "aliases": [
+        "supermarine spitfire"
+      ],
+      "reasons": {
+        "supermarine spitfire": "manufacturer prefix for Spitfire"
+      }
+    },
+    {
       "class_name": "747-400",
       "aliases": [
         "boeing 747 400"

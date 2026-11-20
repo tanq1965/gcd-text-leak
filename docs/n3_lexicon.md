@@ -132,10 +132,20 @@ Các alias bổ sung gồm 10 lớp New và 5 lớp Old (17 cách viết, thuộ
 | `DC-6` | Douglas DC 6 |
 | `Challenger 600` | Bombardier Challenger 600 |
 | `Metroliner` | Fairchild C 26 Metroliner |
+| `A380` | Airbus A380 |
+| `C-47` | Douglas C 47 Skytrain |
+| `DC-10` | McDonnell Douglas DC 10 |
+| `DC-3` | Douglas DC 3 |
+| `F/A-18` | McDonnell Douglas F/A 18 Hornet |
+| `Spitfire` | Supermarine Spitfire |
 
 Lý do từng alias (tên nhà sản xuất, tên family hoặc biến thể quân sự) được ghi trong `ALIAS_REASONS` và audit JSON.
 
 `North American B-45 Tornado` là máy bay khác với `Tornado`, nên được giữ lại.
+
+Sáu alias cuối (A380 → Spitfire) được bổ sung sau khi N8 phát hiện chúng bị đếm là "không phải tên lớp". Danh sách lấy bằng cách quét mọi tag chứa nguyên tên một lớp Aircraft, rồi duyệt tay. Loại `Triumph Spitfire` và `Alpine A310` (tên ô tô) cùng `North American B-45 Tornado`. Cả sáu lớp đều là Old, nên lexicon C và D không đổi (C chỉ xoá tên lớp New; D cắt mọi tiền tố bất kể lớp). Độ phủ Aircraft vẫn 100% vì các lớp này đã khớp tên chính xác từ trước.
+
+CUB giữ nguyên quyết định không gộp `Frigatebird`, `Nighthawk`, `Tree_Sparrow` với `Magnificent Frigatebird`, `Common Nighthawk`, `American Tree Sparrow`: tên lớp CUB ứng với nhiều loài (ba loài frigatebird, Lesser/Common Nighthawk, American/Eurasian Tree Sparrow) và lexicon chứa cả các loài anh em (ví dụ `Lesser Nighthawk`), nên chọn một loài là tuỳ ý.
 
 Trong `removed.csv`/`modified.csv`, dòng alias có `rule=alias` và `reason` tương ứng. Dòng thuộc tính bị xoá vì còn tên lớp trong mô tả sử dụng `rule=residual_name`.
 

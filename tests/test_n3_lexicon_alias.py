@@ -209,6 +209,12 @@ def test_alias_collision_is_rejected(tmp_path, monkeypatch):
         ("DC-6", "douglas dc 6"),
         ("Challenger 600", "bombardier challenger 600"),
         ("Metroliner", "fairchild c 26 metroliner"),
+        ("A380", "airbus a380"),
+        ("C-47", "douglas c 47 skytrain"),
+        ("DC-10", "mcdonnell douglas dc 10"),
+        ("DC-3", "douglas dc 3"),
+        ("F/A-18", "mcdonnell douglas f/a 18 hornet"),
+        ("Spitfire", "supermarine spitfire"),
     ],
 )
 def test_aircraft_reviewed_aliases(class_name, expected_alias):
@@ -221,6 +227,16 @@ def test_unrelated_names_are_not_aircraft_aliases():
     assert "north american b 45 tornado" not in lexicon.aliases(
         "Tornado", "aircraft"
     )
+    # Car names that only share a word with an Aircraft class.
+    assert "triumph spitfire" not in lexicon.aliases("Spitfire", "aircraft")
+    assert "alpine a310" not in lexicon.aliases("A310", "aircraft")
+
+
+def test_ambiguous_cub_genus_names_stay_unmerged():
+    # CUB class names that cover several species keep exact matching only (N3 decision).
+    assert lexicon.aliases("044.Frigatebird", "cub") == {"frigatebird"}
+    assert lexicon.aliases("092.Nighthawk", "cub") == {"nighthawk"}
+    assert lexicon.aliases("130.Tree_Sparrow", "cub") == {"tree sparrow"}
 
 def test_cub_new_aliases_do_not_remove_unrelated_names(
     tmp_path, monkeypatch
