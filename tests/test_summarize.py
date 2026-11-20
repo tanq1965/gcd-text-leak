@@ -19,6 +19,8 @@ def test_parse_result_filename():
     assert parse_result_filename("cub_A_s0.json") == ("cub", "A", 0)
     assert parse_result_filename("scars_A+B_s3.json") == ("scars", "A+B", 3)
     assert parse_result_filename("aircraft_A+B_a0.25_s2.json") == ("aircraft", "A+B_a0.25", 2)
+    assert parse_result_filename("cub_A+C_a0.25_s1.json") == ("cub", "A+C_a0.25", 1)
+    assert parse_result_filename("scars_A+D_a0.75_s4.json") == ("scars", "A+D_a0.75", 4)
     assert parse_result_filename("invalid_name.txt") is None
 
 
