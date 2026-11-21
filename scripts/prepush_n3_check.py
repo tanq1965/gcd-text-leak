@@ -56,6 +56,12 @@ AIRCRAFT_ALIAS_CLASS_NAMES = {
     "DC-6",
     "Challenger 600",
     "Metroliner",
+    "A380",
+    "C-47",
+    "DC-10",
+    "DC-3",
+    "F/A-18",
+    "Spitfire",
 }
 
 class Checks:
@@ -334,7 +340,7 @@ def check_dataset(root: Path, checks: Checks, dataset: str) -> None:
     elif dataset == "aircraft":
         checks.require(
             approved == AIRCRAFT_ALIAS_CLASS_NAMES,
-            "Aircraft audit contains all nine approved alias classes",
+            "Aircraft audit contains all 15 approved alias classes",
         )
 
 

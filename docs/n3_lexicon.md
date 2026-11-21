@@ -132,10 +132,20 @@ Các alias bổ sung gồm 10 lớp New và 5 lớp Old (17 cách viết, thuộ
 | `DC-6` | Douglas DC 6 |
 | `Challenger 600` | Bombardier Challenger 600 |
 | `Metroliner` | Fairchild C 26 Metroliner |
+| `A380` | Airbus A380 |
+| `C-47` | Douglas C 47 Skytrain |
+| `DC-10` | McDonnell Douglas DC 10 |
+| `DC-3` | Douglas DC 3 |
+| `F/A-18` | McDonnell Douglas F/A 18 Hornet |
+| `Spitfire` | Supermarine Spitfire |
 
 Lý do từng alias (tên nhà sản xuất, tên family hoặc biến thể quân sự) được ghi trong `ALIAS_REASONS` và audit JSON.
 
 `North American B-45 Tornado` là máy bay khác với `Tornado`, nên được giữ lại.
+
+Sáu alias cuối (A380 → Spitfire) được bổ sung sau khi N8 phát hiện chúng bị đếm là "không phải tên lớp". Danh sách lấy bằng cách quét mọi tag chứa nguyên tên một lớp Aircraft, rồi duyệt tay. Loại `Triumph Spitfire` và `Alpine A310` (tên ô tô) cùng `North American B-45 Tornado`. Cả sáu lớp đều là Old, nên lexicon C và D không đổi (C chỉ xoá tên lớp New; D cắt mọi tiền tố bất kể lớp). Độ phủ Aircraft vẫn 100% vì các lớp này đã khớp tên chính xác từ trước.
+
+CUB giữ nguyên quyết định không gộp `Frigatebird`, `Nighthawk`, `Tree_Sparrow` với `Magnificent Frigatebird`, `Common Nighthawk`, `American Tree Sparrow`: tên lớp CUB ứng với nhiều loài (ba loài frigatebird, Lesser/Common Nighthawk, American/Eurasian Tree Sparrow) và lexicon chứa cả các loài anh em (ví dụ `Lesser Nighthawk`), nên chọn một loài là tuỳ ý.
 
 Trong `removed.csv`/`modified.csv`, dòng alias có `rule=alias` và `reason` tương ứng. Dòng thuộc tính bị xoá vì còn tên lớp trong mô tả sử dụng `rule=residual_name`.
 
@@ -151,13 +161,24 @@ Coverage bên dưới được tính trên **lexicon gốc B**: một lớp đư
 | Aircraft | All (100) | 100.0% | 100.0% | 100.0% |
 | Stanford Cars | All (196) | 100.0% | 100.0% | 100.0% |
 
+### Tên cấp thô chỉ trỏ vào lớp New (bổ sung sau N8)
+
+N8 phát hiện bản C của Stanford Cars vẫn giữ tên rút gọn hãng + dòng xe của lớp New (ví dụ `GMC Savana` cho `GMC Savana Van 2012`): 47.1% ảnh New ở bản C có tag top-1 là tên rút gọn của chính lớp mình. Luật bổ sung (Tân chốt), áp cho cả 3 tập, chỉ với bản C:
+
+- Tên cấp thô = tiền tố theo token, ngắn hơn, của tên lớp hoặc alias đã duyệt.
+- Xoá tag, hoặc cắt tiền tố `X which` và giữ mô tả, khi **mọi** lớp khớp đều là New. Khớp cả Old và New thì giữ (ví dụ `Audi S4`).
+- Chỉ xét tên cấp thô từ 2 token trở lên. Từ đơn (`house`, `field`, `song` ở CUB; `falcon`, `hawk`, `l`, `model` ở Aircraft) là từ thông dụng hoặc có nghĩa khác, giữ lại như `cardinal directions`.
+- So thêm sau khi bỏ token đầu (tên hãng), vì alias có tên hãng chỉ được duyệt cho một số biến thể: `Boeing 747` cũng khớp `747-100` (Old) nên được giữ.
+
+Kết quả: Cars C xoá thêm 61 tag (`rule=C_remove_coarse_New_tag`, 3 tag trỏ vào nhiều lớp New như `Audi TT`). CUB và Aircraft không đổi. Không tập nào có tiền tố thuộc tính cấp thô. Bản B và D không đổi. Audit JSON có thêm `C_removed_coarse_tags` và `C_modified_coarse_attributes`.
+
 Audit counts sau review:
 
 | Dataset | C removed tags | C removed attrs | C modified attrs | D removed tags | D removed attrs | D deduplicated attrs | D modified attrs |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | CUB | 87 | 0 | 617 | 22,131 | 6,739 | 6,739 | 27,994 |
 | Aircraft | 62 | 1 | 401 | 22,131 | 6,741 | 6,739 | 27,992 |
-| Stanford Cars | 98 | 0 | 845 | 22,131 | 6,739 | 6,739 | 27,994 |
+| Stanford Cars | 159 | 0 | 845 | 22,131 | 6,739 | 6,739 | 27,994 |
 
 Sau alias mapping, CUB còn 43 lớp không match theo tên chính xác/alias đã duyệt. `coverage/cub_unmatched_candidates.csv` tìm thấy 3 nhóm có substring hit:
 - `Tree_Sparrow` ↔ `American Tree Sparrow`
