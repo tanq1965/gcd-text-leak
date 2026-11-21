@@ -161,13 +161,24 @@ Coverage bên dưới được tính trên **lexicon gốc B**: một lớp đư
 | Aircraft | All (100) | 100.0% | 100.0% | 100.0% |
 | Stanford Cars | All (196) | 100.0% | 100.0% | 100.0% |
 
+### Tên cấp thô chỉ trỏ vào lớp New (bổ sung sau N8)
+
+N8 phát hiện bản C của Stanford Cars vẫn giữ tên rút gọn hãng + dòng xe của lớp New (ví dụ `GMC Savana` cho `GMC Savana Van 2012`): 47.1% ảnh New ở bản C có tag top-1 là tên rút gọn của chính lớp mình. Luật bổ sung (Tân chốt), áp cho cả 3 tập, chỉ với bản C:
+
+- Tên cấp thô = tiền tố theo token, ngắn hơn, của tên lớp hoặc alias đã duyệt.
+- Xoá tag, hoặc cắt tiền tố `X which` và giữ mô tả, khi **mọi** lớp khớp đều là New. Khớp cả Old và New thì giữ (ví dụ `Audi S4`).
+- Chỉ xét tên cấp thô từ 2 token trở lên. Từ đơn (`house`, `field`, `song` ở CUB; `falcon`, `hawk`, `l`, `model` ở Aircraft) là từ thông dụng hoặc có nghĩa khác, giữ lại như `cardinal directions`.
+- So thêm sau khi bỏ token đầu (tên hãng), vì alias có tên hãng chỉ được duyệt cho một số biến thể: `Boeing 747` cũng khớp `747-100` (Old) nên được giữ.
+
+Kết quả: Cars C xoá thêm 61 tag (`rule=C_remove_coarse_New_tag`, 3 tag trỏ vào nhiều lớp New như `Audi TT`). CUB và Aircraft không đổi. Không tập nào có tiền tố thuộc tính cấp thô. Bản B và D không đổi. Audit JSON có thêm `C_removed_coarse_tags` và `C_modified_coarse_attributes`.
+
 Audit counts sau review:
 
 | Dataset | C removed tags | C removed attrs | C modified attrs | D removed tags | D removed attrs | D deduplicated attrs | D modified attrs |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | CUB | 87 | 0 | 617 | 22,131 | 6,739 | 6,739 | 27,994 |
 | Aircraft | 62 | 1 | 401 | 22,131 | 6,741 | 6,739 | 27,992 |
-| Stanford Cars | 98 | 0 | 845 | 22,131 | 6,739 | 6,739 | 27,994 |
+| Stanford Cars | 159 | 0 | 845 | 22,131 | 6,739 | 6,739 | 27,994 |
 
 Sau alias mapping, CUB còn 43 lớp không match theo tên chính xác/alias đã duyệt. `coverage/cub_unmatched_candidates.csv` tìm thấy 3 nhóm có substring hit:
 - `Tree_Sparrow` ↔ `American Tree Sparrow`

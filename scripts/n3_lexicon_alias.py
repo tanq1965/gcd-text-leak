@@ -222,6 +222,46 @@ def tag_name(prompt: str) -> str:
     return normalize(match.group(1) if match else prompt)
 
 
+MIN_COARSE_TOKENS = 2
+
+
+def coarse_new_keys(key_to_old: dict[str, list[tuple[str, bool]]]) -> dict[str, list[str]]:
+    """Coarse names that point only at New classes (rule agreed with Tan after N8).
+
+    A coarse name is a strict token prefix of a class name or approved alias
+    ("gmc savana" < "gmc savana van 2012"). It is returned only when every class it
+    prefixes is New; a prefix shared by Old and New classes is kept. Two guards keep
+    the rule from removing words that are not names of the class:
+    - at least MIN_COARSE_TOKENS tokens: single words ("house", "field", "falcon",
+      "hawk", "l", "model") are common words or other meanings, kept like
+      "cardinal directions";
+    - the prefix is also matched after dropping its first token, so a manufacturer
+      prefix that only one alias carries ("boeing 747" < alias "boeing 747 400")
+      still sees the Old variants ("747 100") and is kept.
+    Returns {coarse key: [class names]}.
+    """
+    owners: dict[str, dict[str, bool]] = defaultdict(dict)
+    for full_key, entries in key_to_old.items():
+        tokens = full_key.split()
+        for size in range(1, len(tokens)):
+            prefix = " ".join(tokens[:size])
+            for class_name, is_old in entries:
+                owners[prefix][class_name] = is_old
+
+    result: dict[str, list[str]] = {}
+    for prefix, classes in owners.items():
+        tokens = prefix.split()
+        if prefix in key_to_old or len(tokens) < MIN_COARSE_TOKENS:
+            continue
+        matched = dict(classes)
+        matched.update(owners.get(" ".join(tokens[1:]), {}))
+        for name in key_to_old.get(" ".join(tokens[1:]), []):
+            matched[name[0]] = name[1]
+        if not any(matched.values()):
+            result[prefix] = sorted(classes)
+    return result
+
+
 def attr_parts(sentence: str) -> tuple[str | None, str | None]:
     """Return (normalized class prefix, description) for an 'X which Y' sentence."""
     match = re.match(r"^\s*(.+?)\s+which\s+(.+?)\s*$", sentence, re.I | re.S)
@@ -357,6 +397,12 @@ def main() -> None:
     if collisions:
         raise ValueError(f"Ambiguous class name/alias mapping(s): {collisions}")
 
+    key_to_old: dict[str, list[tuple[str, bool]]] = defaultdict(list)
+    for class_row in classes:
+        for alias in aliases(class_row["name_norm"], args.ds):
+            key_to_old[alias].append((class_row["class_name"], bool(class_row["is_old"])))
+    coarse_new = coarse_new_keys(key_to_old)
+
     # Coverage measures the ORIGINAL TextGCD lexicon (B), not the filtered C/D files.
     coverage: list[dict[str, Any]] = []
     for class_row in classes:
@@ -438,6 +484,17 @@ def main() -> None:
                     "reason": ALIAS_REASONS.get(key, ""),
                 }
             )
+        elif key in coarse_new:
+            c_removed.append(
+                {
+                    "file": "Lexicon_tags.csv",
+                    "line": line_number,
+                    "text": tag,
+                    "matched_class": " | ".join(coarse_new[key]),
+                    "rule": "C_remove_coarse_New_tag",
+                    "reason": "coarse name is a token prefix of New classes only",
+                }
+            )
         else:
             c_tags.append(tag)
 
@@ -446,7 +503,8 @@ def main() -> None:
     for line_number, (sentence, prefix) in enumerate(
         zip(attrs, attr_prefixes), 1
     ):
-        is_new_prefix = prefix in new_keys
+        is_coarse_prefix = prefix in coarse_new
+        is_new_prefix = prefix in new_keys or is_coarse_prefix
 
         if is_new_prefix:
             _, description = attr_parts(sentence)
@@ -487,14 +545,20 @@ def main() -> None:
                 "text": sentence,
                 "new_text": candidate,
                 "matched_class": " | ".join(
-                    key_to_classes[prefix]
+                    coarse_new[prefix] if is_coarse_prefix else key_to_classes[prefix]
                 ),
                 "rule": (
-                    "alias"
+                    "C_strip_coarse_New_prefix_X_which"
+                    if is_coarse_prefix
+                    else "alias"
                     if prefix in ALIAS_REASONS
                     else "C_strip_New_prefix_X_which"
                 ),
-                "reason": ALIAS_REASONS.get(prefix, ""),
+                "reason": (
+                    "coarse name is a token prefix of New classes only"
+                    if is_coarse_prefix
+                    else ALIAS_REASONS.get(prefix, "")
+                ),
             })
         else:
             c_attrs.append(sentence)
@@ -619,6 +683,10 @@ def main() -> None:
     assert all(attr_parts(sentence)[0] not in new_keys for sentence in c_attrs), (
         "C still contains a New-class attribute prefix"
     )
+    assert all(tag_name(tag) not in coarse_new for tag in c_tags), "C still contains a coarse New tag"
+    assert all(attr_parts(sentence)[0] not in coarse_new for sentence in c_attrs), (
+        "C still contains a coarse New attribute prefix"
+    )
     assert not read_one_column(args.out / "lexicon" / args.ds / "D" / "tags.csv"), (
         "D tags must be empty"
     )
@@ -642,6 +710,12 @@ def main() -> None:
             for row in c_removed
         ),
         "C_modified_attributes": len(c_modified),
+        "C_removed_coarse_tags": sum(
+            row["rule"] == "C_remove_coarse_New_tag" for row in c_removed
+        ),
+        "C_modified_coarse_attributes": sum(
+            row["rule"] == "C_strip_coarse_New_prefix_X_which" for row in c_modified
+        ),
 
         "D_removed_tags": len(tags),
         "D_removed_attributes": sum(

@@ -97,3 +97,64 @@ Lexicon_tags.csv,1596,a photo of a Hyundai Veracruz SUV 2012,Hyundai Veracruz SU
 Lexicon_tags.csv,1643,a photo of a Spyker C8 Coupe 2009,Spyker C8 Coupe 2009,C_remove_New_tag,
 Lexicon_tags.csv,1647,a photo of a Suzuki SX4 Sedan 2012,Suzuki SX4 Sedan 2012,C_remove_New_tag,
 Lexicon_tags.csv,1654,a photo of a Volkswagen Golf Hatchback 1991,Volkswagen Golf Hatchback 1991,C_remove_New_tag,
+Lexicon_tags.csv,5434,a photo of a Chevrolet camaro,Chevrolet Camaro Convertible 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,5857,a photo of a Chevrolet impala,Chevrolet Impala Sedan 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,6218,a photo of a Chevrolet avalanche,Chevrolet Avalanche Crew Cab 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,6688,a photo of a Ford freestar,Ford Freestar Minivan 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,6820,a photo of a Acura tsx,Acura TSX Sedan 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,6987,a photo of a Bentley arnage,Bentley Arnage Sedan 2009,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,7045,a photo of a Cadillac escalade,Cadillac Escalade EXT Crew Cab 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,7355,a photo of a Bmw x6,BMW X6 SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,7639,a photo of a Ford focus,Ford Focus Sedan 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,8081,a photo of a Ford fiesta,Ford Fiesta Sedan 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,8755,a photo of a Audi tt,Audi TT Hatchback 2011 | Audi TT RS Coupe 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,9231,a photo of a Dodge journey,Dodge Journey SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,9352,a photo of a Ford gt,Ford GT Coupe 2006,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,9620,a photo of a Bmw z4,BMW Z4 Convertible 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,9917,a photo of a Chrysler crossfire,Chrysler Crossfire Convertible 2008,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,10034,a photo of a Bmw 6 series,BMW 6 Series Convertible 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,10060,a photo of a Audi a5,Audi A5 Coupe 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,10080,a photo of a Dodge challenger,Dodge Challenger SRT8 2011,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,10245,a photo of a Chrysler 300,Chrysler 300 SRT-8 2010,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11203,a photo of a Gmc savana,GMC Savana Van 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11216,a photo of a Ford e series,Ford E-Series Wagon Van 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11275,a photo of a Buick rainier,Buick Rainier SUV 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11289,a photo of a Bmw 6 series ,BMW 6 Series Convertible 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11290,a photo of a Bmw x5 ,BMW X5 SUV 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11400,a photo of a Hummer h2,HUMMER H2 SUT Crew Cab 2009,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11727,a photo of a Chevrolet tahoe,Chevrolet Tahoe Hybrid SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11746,a photo of a Dodge magnum,Dodge Magnum Wagon 2008,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11751,a photo of a Ford expedition,Ford Expedition EL SUV 2009,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11763,a photo of a Bmw x5,BMW X5 SUV 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11811,a photo of a Bmw m3,BMW M3 Coupe 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11814,a photo of a Audi r8,Audi R8 Coupe 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11828,a photo of a Ford ranger,Ford Ranger SuperCab 2011,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,11986,a photo of a Dodge dakota,Dodge Dakota Club Cab 2007 | Dodge Dakota Crew Cab 2010,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,12146,a photo of a Hyundai tucson,Hyundai Tucson SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,12151,a photo of a Chevrolet malibu,Chevrolet Malibu Hybrid Sedan 2010 | Chevrolet Malibu Sedan 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,12226,a photo of a Bmw m6,BMW M6 Convertible 2010,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,12408,a photo of a Chevrolet trailblazer,Chevrolet TrailBlazer SS 2009,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,12465,a photo of a Ferrari california,Ferrari California Convertible 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,12700,a photo of a Bentley continental flying spur,Bentley Continental Flying Spur Sedan 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,12854,a photo of a Chevrolet monte carlo,Chevrolet Monte Carlo Coupe 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,12885,a photo of a Bmw m5,BMW M5 Sedan 2010,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,13219,a photo of a Cadillac srx,Cadillac SRX SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,13220,a photo of a Chrysler pt cruiser,Chrysler PT Cruiser Convertible 2008,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,13257,a photo of a Gmc canyon,GMC Canyon Extended Cab 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,13268,a photo of a Audi v8,Audi V8 Sedan 1994,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,13643,a photo of a Chevrolet cobalt,Chevrolet Cobalt SS 2010,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,13684,a photo of a Chevrolet hhr,Chevrolet HHR SS 2010,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,14196,a photo of a Bmw x3,BMW X3 SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,14778,a photo of a Acura zdx,Acura ZDX Hatchback 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,15318,a photo of a Hyundai santa fe,Hyundai Santa Fe SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,16025,a photo of a Audi s6,Audi S6 Sedan 2011,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,16369,a photo of a Bentley mulsanne,Bentley Mulsanne Sedan 2011,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,16855,a photo of a Chrysler sebring,Chrysler Sebring Convertible 2010,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,17225,a photo of a Chrysler town and country,Chrysler Town and Country Minivan 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,17353,a photo of a Ford edge,Ford Edge SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,17369,a photo of a Gmc acadia,GMC Acadia SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,17754,a photo of a Buick enclave,Buick Enclave SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,19653,a photo of a Buick verano,Buick Verano Sedan 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,20335,a photo of a Hyundai veracruz,Hyundai Veracruz SUV 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,20785,a photo of a Chevrolet sonic,Chevrolet Sonic Sedan 2012,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only
+Lexicon_tags.csv,22010,a photo of a Ford mustang,Ford Mustang Convertible 2007,C_remove_coarse_New_tag,coarse name is a token prefix of New classes only

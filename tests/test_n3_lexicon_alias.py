@@ -590,3 +590,65 @@ def test_d_strip_all_handles_multiline_and_empty_tags(tmp_path, monkeypatch):
     assert (d / "tags.csv").read_bytes() == b""
     c = out / "lexicon" / "scars" / "C"
     assert (c / "tags.csv").read_bytes() == b""
+
+
+# --------------------------------------------------------------------------- coarse New names (after N8)
+def _k2o(rows):
+    out = {}
+    for class_name, name, is_old, ds in rows:
+        for alias in lexicon.aliases(name, ds):
+            out.setdefault(alias, []).append((class_name, is_old))
+    return out
+
+
+def test_coarse_prefix_of_new_only_is_removed_and_shared_is_kept():
+    k2o = _k2o([
+        ("GMC Savana Van 2012", "gmc savana van 2012", False, "scars"),
+        ("Audi TT RS Coupe 2012", "audi tt rs coupe 2012", False, "scars"),
+        ("Audi TT Hatchback 2011", "audi tt hatchback 2011", False, "scars"),
+        ("Audi S4 Sedan 2012", "audi s4 sedan 2012", True, "scars"),
+        ("Audi S4 Sedan 2007", "audi s4 sedan 2007", False, "scars"),
+    ])
+    coarse = lexicon.coarse_new_keys(k2o)
+    assert coarse["gmc savana"] == ["GMC Savana Van 2012"]
+    assert coarse["audi tt"] == ["Audi TT Hatchback 2011", "Audi TT RS Coupe 2012"]  # all matches New
+    assert "audi s4" not in coarse  # shared by Old and New -> kept
+    assert "audi" not in coarse and "gmc" not in coarse  # single token -> kept
+
+
+def test_coarse_rule_keeps_single_words_and_manufacturer_prefixed_shared_names():
+    k2o = _k2o([
+        ("747-100", "747-100", True, "aircraft"),
+        ("747-400", "747-400", False, "aircraft"),  # only this one has alias "boeing 747 400"
+        ("Falcon 900", "falcon 900", False, "aircraft"),
+        ("House Sparrow", "house sparrow", False, "cub"),
+    ])
+    coarse = lexicon.coarse_new_keys(k2o)
+    assert "boeing 747" not in coarse  # also prefixes Old 747-100 once "boeing" is dropped
+    assert "falcon" not in coarse and "house" not in coarse
+
+
+def test_c_removes_coarse_new_tags_and_strips_coarse_prefix(tmp_path, monkeypatch):
+    names = tmp_path / "names.csv"
+    names.write_text(
+        "label,class_name,name_norm,is_old\n"
+        "0,Audi S4 Sedan 2012,audi s4 sedan 2012,1\n"
+        "1,Audi S4 Sedan 2007,audi s4 sedan 2007,0\n"
+        "2,GMC Savana Van 2012,gmc savana van 2012,0\n",
+        encoding="utf-8",
+    )
+    tags = tmp_path / "tags.csv"
+    tags.write_text("a photo of a Gmc savana\na photo of a Audi s4\na photo of a house\n", encoding="utf-8")
+    attrs = tmp_path / "attrs.csv"
+    attrs.write_text("gmc savana which has sliding doors\naudi s4 which has four rings\n", encoding="utf-8")
+    out = tmp_path / "out"
+    monkeypatch.setattr(sys, "argv", [
+        "n3", "--ds", "scars", "--names", str(names), "--tags", str(tags), "--attrs", str(attrs),
+        "--out", str(out), "--d-strip-all",
+    ])
+    lexicon.main()
+    c = out / "lexicon" / "scars" / "C"
+    assert lexicon.read_one_column(c / "tags.csv") == ["a photo of a Audi s4", "a photo of a house"]
+    assert lexicon.read_one_column(c / "attributes.csv") == ["has sliding doors", "audi s4 which has four rings"]
+    audit = json.loads((out / "coverage" / "scars_audit.json").read_text(encoding="utf-8"))
+    assert audit["C_removed_coarse_tags"] == 1 and audit["C_modified_coarse_attributes"] == 1
