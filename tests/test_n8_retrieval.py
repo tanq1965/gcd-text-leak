@@ -315,4 +315,3 @@ def test_main_writes_prefix_hits_file(tmp_path):
     with (out / "n8_prefix_hits.csv").open(encoding="utf-8") as f:
         hits = list(csv.DictReader(f))
     assert any(h["version"] == "C" and h["text"] == "a photo of a Yak" and h["n_tokens"] == "1" for h in hits)
-

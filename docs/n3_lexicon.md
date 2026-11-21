@@ -163,7 +163,7 @@ Coverage bên dưới được tính trên **lexicon gốc B**: một lớp đư
 
 ### Tên cấp thô chỉ trỏ vào lớp New (bổ sung sau N8)
 
-N8 phát hiện bản C của Stanford Cars vẫn giữ tên rút gọn hãng + dòng xe của lớp New (ví dụ `GMC Savana` cho `GMC Savana Van 2012`): 47.1% ảnh New ở bản C có tag top-1 là tên rút gọn của chính lớp mình. Luật bổ sung (Tân chốt), áp cho cả 3 tập, chỉ với bản C:
+N8 phát hiện bản C của Stanford Cars vẫn giữ tên rút gọn hãng + dòng xe của lớp New (ví dụ `GMC Savana` cho `GMC Savana Van 2012`). Con số 47.1% (ảnh New ở bản C có tag top-1 là tên rút gọn của chính lớp mình) là **số lịch sử**: đo trên RTG cũ, theo định nghĩa khác với N8 hiện tại và chưa được tái lập độc lập, nên không dùng trong báo cáo. Số dùng cho báo cáo là Bảng 2 của `retrieval/n8_summary.md`. Luật bổ sung (Tân chốt), áp cho cả 3 tập, chỉ với bản C:
 
 - Tên cấp thô = tiền tố theo token, ngắn hơn, của tên lớp hoặc alias đã duyệt.
 - Xoá tag, hoặc cắt tiền tố `X which` và giữ mô tả, khi **mọi** lớp khớp đều là New. Khớp cả Old và New thì giữ (ví dụ `Audi S4`).
