@@ -121,3 +121,29 @@ def test_main_writes_outputs_and_warns_on_new_name_in_c(tmp_path, capsys):
     with (out / "n8_summary.csv").open() as f:
         assert len(list(csv.DictReader(f))) == 6  # 2 versions x All/Old/New
     assert "CẢNH BÁO aircraft/C" in capsys.readouterr().err
+
+
+def test_prefix_leak_columns_use_own_tokens_and_uniqueness(tmp_path):
+    rtg = [dict(RTG[0], tags=["a photo of a Spitfire mk ix"]), dict(RTG[1], tags=["a photo of a DC"]),
+           dict(RTG[2], tags=["a photo of a Tornado"]), dict(RTG[3], tags=["a photo of a Yak"])]
+    root = make_repo(tmp_path, rtg_c=rtg)
+    rows = {r["image_id"]: r for r in n8.evaluate("aircraft", "C", root / "rtg", root)}
+    assert rows["i1.jpg"]["prefix_top3"] == 1 and rows["i1.jpg"]["prefix_unique_top3"] == 1  # "dc" < "dc 3"
+    assert rows["i3.jpg"]["prefix_unique_top3"] == 1  # "yak" < "yak 42"
+    assert rows["i2.jpg"]["prefix_top3"] == 0  # exact name is not a prefix leak
+    assert rows["i0.jpg"]["prefix_top3"] == 0  # longer name is not a prefix
+
+
+def test_lexicon_status_flags_stale_rtg(tmp_path):
+    (tmp_path / "lexicon/aircraft/C").mkdir(parents=True)
+    (tmp_path / "lexicon/aircraft/C/tags.csv").write_text("a photo of a cat\n", encoding="utf-8")
+    (tmp_path / "lexicon/aircraft/C/attributes.csv").write_text("has wings\n", encoding="utf-8")
+    import hashlib, json
+    sha = lambda p: hashlib.sha256((tmp_path / p).read_bytes()).hexdigest()  # noqa: E731
+    meta = {"tags_sha256": sha("lexicon/aircraft/C/tags.csv"), "attributes_sha256": sha("lexicon/aircraft/C/attributes.csv")}
+    (tmp_path / "aircraft_C.json").write_text(json.dumps(meta), encoding="utf-8")
+    assert n8.lexicon_status("aircraft", "C", tmp_path, tmp_path) == "ok"
+    (tmp_path / "lexicon/aircraft/C/tags.csv").write_text("a photo of a dog\n", encoding="utf-8")
+    assert n8.lexicon_status("aircraft", "C", tmp_path, tmp_path) == "STALE"
+    assert n8.lexicon_status("cub", "C", tmp_path, tmp_path) == "no-meta"
+    assert "STALE" in n8.to_markdown([dict(n8.summarize([], "aircraft", "C", "STALE")[0], images=1)])

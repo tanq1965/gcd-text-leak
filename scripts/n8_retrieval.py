@@ -18,6 +18,14 @@ Metrics (per image, then averaged over All/Old/New images of the split):
   correct_top3_covered = correct_top3 restricted to those images (separates "name available" from
   "name retrieved").
 
+- prefix_top3      : rò theo tiền tố token. One of the top-3 tags is a strict token prefix of the own class
+  name/alias (directly, or after dropping its first token, e.g. "canyon" < "gmc canyon ..."), not
+  counting exact names. prefix_unique_top3 keeps only prefixes that match no other class of the dataset.
+  Uses its own tokenizer (lowercase, non-alphanumerics -> space), independent of the N3 filter.
+- Staleness: every row checks the sha256 of the lexicon recorded in rtg/{ds}_{ver}.json against the
+  current lexicon file (B: third_party/textgcd/Lexicon, C/D: lexicon/{ds}/{ver}). A mismatch is flagged
+  in the "lexicon" column and at the top of n8_summary.md; do not cite those rows.
+
 Name matching reuses scripts/n3_lexicon_alias.py (normalize, aliases, tag_name, attr_parts), so N8 counts
 exactly what N3 counts as a class name.
 
@@ -30,6 +38,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
+import json
+import re
 import pickle
 import sys
 from pathlib import Path
@@ -42,8 +53,44 @@ import n3_lexicon_alias as n3  # noqa: E402
 DATASETS = ("cub", "scars", "aircraft")
 DS_TITLE = {"cub": "CUB", "scars": "Stanford Cars", "aircraft": "FGVC-Aircraft"}
 GROUPS = ("All", "Old", "New")
+LEXICON = {"B": ("third_party/textgcd/Lexicon/Lexicon_tags.csv", "third_party/textgcd/Lexicon/Lexicon_attributes.csv"),
+           "C": ("lexicon/{ds}/C/tags.csv", "lexicon/{ds}/C/attributes.csv"),
+           "D": ("lexicon/{ds}/D/tags.csv", "lexicon/{ds}/D/attributes.csv")}
 PCT_COLS = ("correct_top3", "correct_top3_covered", "top1_correct", "top1_wrong", "top1_wrong_old",
             "top1_wrong_new", "top1_other", "no_tag", "attr_correct")
+
+
+def tokens(text: str) -> tuple[str, ...]:
+    """Own tokenizer for the prefix-leak columns (independent of N3's normalize)."""
+    text = re.sub(r"^\s*a photo of\s+(?:a|an)\s+", "", text, flags=re.I)
+    return tuple(re.sub(r"[^a-z0-9]+", " ", text.casefold()).split())
+
+
+def build_prefix_index(names_csv: Path, ds: str) -> tuple[dict, set]:
+    """strict token prefix -> labels it prefixes (direct or after dropping the first token); exact names."""
+    index: dict[tuple, set[int]] = {}
+    exact: set[tuple] = set()
+    for row in n3.load_names(names_csv):
+        for name in n3.aliases(row["name_norm"], ds) | {row["class_name"]}:
+            full = tokens(name)
+            exact.add(full)
+            for seq in (full, full[1:]):
+                for size in range(1, len(seq)):
+                    index.setdefault(seq[:size], set()).add(row["label"])
+    return index, exact
+
+
+def lexicon_status(ds: str, ver: str, rtg_dir: Path, root: Path) -> str:
+    """'ok' if rtg/{ds}_{ver}.json was built from the current lexicon files, else 'STALE'/'no-meta'."""
+    meta_path = rtg_dir / f"{ds}_{ver}.json"
+    if not meta_path.is_file():
+        return "no-meta"
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    for key, rel in zip(("tags_sha256", "attributes_sha256"), LEXICON[ver]):
+        current = hashlib.sha256((root / rel.format(ds=ds)).read_bytes()).hexdigest()
+        if meta.get(key) != current:
+            return "STALE"
+    return "ok"
 
 
 def build_name_index(names_csv: Path, ds: str) -> tuple[dict[str, int], dict[int, bool]]:
@@ -108,18 +155,22 @@ def evaluate(ds: str, ver: str, rtg_dir: Path, root: Path = ROOT) -> list[dict]:
         if is_old[s["label"]] != s["is_old"]:
             raise ValueError(f"{ds}: is_old of label {s['label']} differs between names/ and splits/")
 
+    prefix_index, exact = build_prefix_index(root / "names" / f"{ds}.csv", ds)
     rows = []
     for s, r in zip(split, rtg):
         m = classify_image(r["tags"], r["attributes"], s["label"], key_to_label, is_old)
+        hits = [prefix_index.get(tokens(t), set()) for t in r["tags"][:3] if tokens(t) not in exact]
         rows.append({
             "image_id": s["image_id"], "label": s["label"], "is_old": int(s["is_old"]),
             "is_labeled": s["is_labeled"], "covered_B": int(covered[s["label"]]), **m,
             "top1_tag": r["tags"][0] if r["tags"] else "",
+            "prefix_top3": int(any(s["label"] in h for h in hits)),
+            "prefix_unique_top3": int(any(h == {s["label"]} for h in hits)),
         })
     return rows
 
 
-def summarize(rows: list[dict], ds: str, ver: str) -> list[dict]:
+def summarize(rows: list[dict], ds: str, ver: str, lexicon: str = "ok") -> list[dict]:
     out = []
     for group in GROUPS:
         g = [r for r in rows if group == "All" or bool(r["is_old"]) == (group == "Old")]
@@ -140,6 +191,9 @@ def summarize(rows: list[dict], ds: str, ver: str) -> list[dict]:
             "top1_other": pct(kinds.count("other")),
             "no_tag": pct(kinds.count("no_tag")),
             "attr_correct": pct(sum(r["attr_correct"] for r in g)),
+            "prefix_top3": pct(sum(r.get("prefix_top3", 0) for r in g)),
+            "prefix_unique_top3": pct(sum(r.get("prefix_unique_top3", 0) for r in g)),
+            "lexicon": lexicon,
         })
     return out
 
@@ -153,15 +207,23 @@ def write_csv(path: Path, rows: list[dict]) -> None:
 
 
 def to_markdown(summary: list[dict]) -> str:
+    stale = sorted({f"{DS_TITLE[r['dataset']]} {r['version']}" for r in summary if r.get("lexicon", "ok") != "ok"})
+    status = (f"> ⚠️ **STALE — không trích:** {', '.join(stale)} được tạo từ lexicon khác bản hiện tại "
+              "(hash trong rtg/*.json không khớp). Chạy lại RTG rồi chạy lại N8." if stale else
+              "> ✅ Mọi hàng dùng RTG khớp hash lexicon hiện tại (kiểm tra tự động khi chạy N8).")
     lines = [
-        "# N8 — Truy xuất đúng tên và nhận nhầm tên (RQ1)", "",
+        "# N8 — Truy xuất đúng tên và nhận nhầm tên (RQ1)", "", status, "",
         "Tỉ lệ % trên số ảnh của split (train, cả có nhãn và không nhãn). "
         "*Đúng top-3*: tên lớp đúng nằm trong top-3 tag. *Nhầm top-1*: tag đứng đầu là tên lớp khác "
         "trong cùng tập (tách theo lớp bị gọi tên là Old/New). *Đúng top-3 (có tên)*: chỉ tính ảnh của "
-        "lớp có tên trong tag của lexicon B.", "",
+        "lớp có tên trong tag của lexicon B. *Rò tiền tố*: top-3 có tag là tiền tố token ngắn hơn của tên lớp "
+        "đúng (trực tiếp hoặc sau khi bỏ token đầu, vd `canyon` < `gmc canyon …`), không tính tên chính xác; "
+        "*(chỉ lớp này)*: tiền tố không khớp lớp nào khác trong tập. Hai cột này dùng bộ tách token riêng, "
+        "độc lập với bộ lọc N3, nên đo được rò tên cấp thô mà các cột khác không thấy.", "",
         "| Tập | Bản | Nhóm | Ảnh | Đúng top-3 | Đúng top-3 (có tên) | Đúng top-1 | Nhầm top-1 "
-        "| ↳ gọi tên Old | ↳ gọi tên New | Top-1 không phải tên lớp | Không tag | Thuộc tính đúng tên |",
-        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| ↳ gọi tên Old | ↳ gọi tên New | Top-1 không phải tên lớp | Không tag | Thuộc tính đúng tên "
+        "| Rò tiền tố top-3 | Rò tiền tố (chỉ lớp này) |",
+        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     f = lambda v: "–" if v != v else f"{v:.1f}"  # noqa: E731  (nan -> –)
     for r in summary:
@@ -169,7 +231,9 @@ def to_markdown(summary: list[dict]) -> str:
             f"| {DS_TITLE[r['dataset']]} | {r['version']} | {r['group']} | {r['images']} | "
             f"{f(r['correct_top3'])} | {f(r['correct_top3_covered'])} | {f(r['top1_correct'])} | "
             f"{f(r['top1_wrong'])} | {f(r['top1_wrong_old'])} | {f(r['top1_wrong_new'])} | "
-            f"{f(r['top1_other'])} | {f(r['no_tag'])} | {f(r['attr_correct'])} |")
+            f"{f(r['top1_other'])} | {f(r['no_tag'])} | {f(r['attr_correct'])} | "
+            f"{f(r.get('prefix_top3', float('nan')))} | {f(r.get('prefix_unique_top3', float('nan')))} |"
+            + ("" if r.get("lexicon", "ok") == "ok" else " ⚠️"))
     return "\n".join(lines) + "\n"
 
 
@@ -186,8 +250,12 @@ def main(argv=None) -> None:
     for ds in args.datasets:
         for ver in args.versions:
             rows = evaluate(ds, ver, args.rtg_dir, args.root)
+            status = lexicon_status(ds, ver, args.rtg_dir, args.root)
+            if status != "ok":
+                print(f"CẢNH BÁO {ds}/{ver}: rtg {status} so với lexicon hiện tại -> không trích hàng này",
+                      file=sys.stderr)
             write_csv(args.out / f"{ds}_{ver}_per_image.csv", rows)
-            summary += summarize(rows, ds, ver)
+            summary += summarize(rows, ds, ver, status)
             if ver == "C":  # risk check in the plan: C must never retrieve a New class name
                 new_hits = sum(r["correct_top3"] for r in rows if not r["is_old"])
                 if new_hits:
