@@ -18,13 +18,26 @@ Metrics (per image, then averaged over All/Old/New images of the split):
   correct_top3_covered = correct_top3 restricted to those images (separates "name available" from
   "name retrieved").
 
-- prefix_top3      : rò theo tiền tố token. One of the top-3 tags is a strict token prefix of the own class
-  name/alias (directly, or after dropping its first token, e.g. "canyon" < "gmc canyon ..."), not
-  counting exact names. prefix_unique_top3 keeps only prefixes that match no other class of the dataset.
-  Uses its own tokenizer (lowercase, non-alphanumerics -> space), independent of the N3 filter.
+- Coarse-name (token-prefix) leak, own tokenizer (lowercase, non-alphanumerics -> space), independent of
+  the N3 filter. A text (tag, or the X of "X which" for attributes) points at the classes whose name/alias
+  it is a strict token prefix of. A leading MANUFACTURER may be dropped on either side, so "gmc canyon ..."
+  is also matched by "canyon" and "boeing 747" also matches "747 100". Only manufacturers are dropped
+  (Cars: first token of class names + multi-token makes; Aircraft: manufacturer part of approved aliases;
+  CUB: none): "Manic GT" is NOT matched to "Ford GT". Labels are the union over both forms, so
+  "boeing 747" points at 747-100/200 (Old) and 747-300/400 (New).
+  Per image, over the top-3 tags:
+    prefix_ge2_top3     own class matched by a tag of >= 2 tokens
+    prefix_1tok_top3    own class matched by a 1-token tag ("canyon", "impala", but also "house"):
+                        manual review group, see n8_prefix_hits.csv
+    prefix_newonly_top3 own class matched and every matched class is New (Tan's N3 rule; 0 for Old images)
+    prefix_unique_top3  own class is the only matched class (stricter than New-only)
+  attr_prefix_top2 / attr_prefix_newonly_top2 / attr_prefix_unique_top2: same on the top-2 attributes.
+  Not counted: exact names, and "extra token + exact name" ("lesser nighthawk", "triumph spitfire"),
+  i.e. the names N3 deliberately did not merge (all Old classes).
+  The >=2-token threshold of N3 is a filter guard; N8 still measures 1-token prefixes (separate column).
 - Staleness: every row checks the sha256 of the lexicon recorded in rtg/{ds}_{ver}.json against the
   current lexicon file (B: third_party/textgcd/Lexicon, C/D: lexicon/{ds}/{ver}). A mismatch is flagged
-  in the "lexicon" column and at the top of n8_summary.md; do not cite those rows.
+  at the top of n8_summary.md and on the row; do not cite those rows.
 
 Name matching reuses scripts/n3_lexicon_alias.py (normalize, aliases, tag_name, attr_parts), so N8 counts
 exactly what N3 counts as a class name.
@@ -32,7 +45,8 @@ exactly what N3 counts as a class name.
 Outputs (in --out, default retrieval/):
 - {ds}_{ver}_per_image.csv : one row per image (input for N9 error analysis),
 - n8_summary.csv           : one row per dataset x version x group,
-- n8_summary.md            : RQ1 table for the report.
+- n8_summary.md            : RQ1 table + coarse-name leak table for the report,
+- n8_prefix_hits.csv       : every coarse-name match that hit the own class (for manual review).
 """
 from __future__ import annotations
 
@@ -66,18 +80,68 @@ def tokens(text: str) -> tuple[str, ...]:
     return tuple(re.sub(r"[^a-z0-9]+", " ", text.casefold()).split())
 
 
-def build_prefix_index(names_csv: Path, ds: str) -> tuple[dict, set]:
-    """strict token prefix -> labels it prefixes (direct or after dropping the first token); exact names."""
+CARS_MULTI_TOKEN_MAKES = {("am", "general"), ("aston", "martin"), ("land", "rover"), ("mercedes", "benz"),
+                          ("rolls", "royce")}
+
+
+def manufacturers(ds: str, classes: list[dict]) -> set[tuple[str, ...]]:
+    """Manufacturer prefixes that may be dropped, taken from the data (no hand list except Cars multi-token makes)."""
+    makers: set[tuple[str, ...]] = set()
+    if ds == "scars":
+        for row in classes:
+            full = tokens(row["name_norm"])
+            two = full[:2]
+            makers.add(two if two in CARS_MULTI_TOKEN_MAKES else full[:1])
+    elif ds == "aircraft":
+        for row in classes:
+            base = tokens(row["name_norm"])
+            for alias in n3.aliases(row["name_norm"], ds):
+                full = tokens(alias)
+                if base and base[0] in full[1:]:
+                    lead = full[: full.index(base[0])]
+                    if lead and not any(ch.isdigit() for t in lead for ch in t):
+                        makers.add(lead)
+    return makers
+
+
+def drop_maker(key: tuple[str, ...], makers: set) -> tuple[str, ...] | None:
+    for size in (2, 1):
+        if len(key) > size and key[:size] in makers:
+            return key[size:]
+    return None
+
+
+def build_prefix_index(names_csv: Path, ds: str) -> tuple[dict, set, set]:
+    """strict token prefix -> labels (name/alias as is, or without its manufacturer); exact names; makers."""
+    classes = n3.load_names(names_csv)
+    makers = manufacturers(ds, classes)
     index: dict[tuple, set[int]] = {}
     exact: set[tuple] = set()
-    for row in n3.load_names(names_csv):
-        for name in n3.aliases(row["name_norm"], ds) | {row["class_name"]}:
+    for row in classes:
+        for name in n3.aliases(row["name_norm"], ds):
             full = tokens(name)
             exact.add(full)
-            for seq in (full, full[1:]):
+            for seq in filter(None, (full, drop_maker(full, makers))):
                 for size in range(1, len(seq)):
                     index.setdefault(seq[:size], set()).add(row["label"])
-    return index, exact
+    return index, exact, makers
+
+
+def prefix_labels(text: str, index: dict, exact: set, makers: set = frozenset()) -> set[int]:
+    """Labels whose name/alias the text is a strict token prefix of (as is, or without a leading manufacturer)."""
+    key = tokens(text)
+    if not key or key in exact:
+        return set()
+    labels = set(index.get(key, set()))
+    rest = drop_maker(key, makers)
+    if rest and rest not in exact:
+        labels |= index.get(rest, set())
+    return labels
+
+
+def attr_prefix(sentence: str) -> str | None:
+    match = re.match(r"^\s*(.+?)\s+which\s+", sentence, re.I)
+    return match.group(1) if match else None
 
 
 def lexicon_status(ds: str, ver: str, rtg_dir: Path, root: Path) -> str:
@@ -155,18 +219,31 @@ def evaluate(ds: str, ver: str, rtg_dir: Path, root: Path = ROOT) -> list[dict]:
         if is_old[s["label"]] != s["is_old"]:
             raise ValueError(f"{ds}: is_old of label {s['label']} differs between names/ and splits/")
 
-    prefix_index, exact = build_prefix_index(root / "names" / f"{ds}.csv", ds)
+    prefix_index, exact, makers = build_prefix_index(root / "names" / f"{ds}.csv", ds)
     rows = []
     for s, r in zip(split, rtg):
-        m = classify_image(r["tags"], r["attributes"], s["label"], key_to_label, is_old)
-        hits = [prefix_index.get(tokens(t), set()) for t in r["tags"][:3] if tokens(t) not in exact]
+        own = s["label"]
+        m = classify_image(r["tags"], r["attributes"], own, key_to_label, is_old)
+        tag_hits = [(t, len(tokens(t)), prefix_labels(t, prefix_index, exact, makers)) for t in r["tags"][:3]]
+        attr_hits = [(p, len(tokens(p)), prefix_labels(p, prefix_index, exact, makers))
+                     for a in r["attributes"][:2] if (p := attr_prefix(a))]
+        new_only = lambda labels: own in labels and not any(is_old[x] for x in labels)  # noqa: E731
         rows.append({
-            "image_id": s["image_id"], "label": s["label"], "is_old": int(s["is_old"]),
-            "is_labeled": s["is_labeled"], "covered_B": int(covered[s["label"]]), **m,
+            "image_id": s["image_id"], "label": own, "is_old": int(s["is_old"]),
+            "is_labeled": s["is_labeled"], "covered_B": int(covered[own]), **m,
             "top1_tag": r["tags"][0] if r["tags"] else "",
-            "prefix_top3": int(any(s["label"] in h for h in hits)),
-            "prefix_unique_top3": int(any(h == {s["label"]} for h in hits)),
+            "prefix_top3": int(any(own in h for _, _, h in tag_hits)),
+            "prefix_ge2_top3": int(any(own in h and n >= 2 for _, n, h in tag_hits)),
+            "prefix_1tok_top3": int(any(own in h and n == 1 for _, n, h in tag_hits)),
+            "prefix_newonly_top3": int(any(new_only(h) for _, _, h in tag_hits)),
+            "prefix_unique_top3": int(any(h == {own} for _, _, h in tag_hits)),
+            "attr_prefix_top2": int(any(own in h for _, _, h in attr_hits)),
+            "attr_prefix_newonly_top2": int(any(new_only(h) for _, _, h in attr_hits)),
+            "attr_prefix_unique_top2": int(any(h == {own} for _, _, h in attr_hits)),
+            "_hits": [(src, text, n, sorted(h)) for src, hits in (("tag", tag_hits), ("attribute", attr_hits))
+                      for text, n, h in hits if own in h],
         })
+    return rows
     return rows
 
 
@@ -192,7 +269,13 @@ def summarize(rows: list[dict], ds: str, ver: str, lexicon: str = "ok") -> list[
             "no_tag": pct(kinds.count("no_tag")),
             "attr_correct": pct(sum(r["attr_correct"] for r in g)),
             "prefix_top3": pct(sum(r.get("prefix_top3", 0) for r in g)),
+            "prefix_ge2_top3": pct(sum(r.get("prefix_ge2_top3", 0) for r in g)),
+            "prefix_1tok_top3": pct(sum(r.get("prefix_1tok_top3", 0) for r in g)),
+            "prefix_newonly_top3": pct(sum(r.get("prefix_newonly_top3", 0) for r in g)),
             "prefix_unique_top3": pct(sum(r.get("prefix_unique_top3", 0) for r in g)),
+            "attr_prefix_top2": pct(sum(r.get("attr_prefix_top2", 0) for r in g)),
+            "attr_prefix_newonly_top2": pct(sum(r.get("attr_prefix_newonly_top2", 0) for r in g)),
+            "attr_prefix_unique_top2": pct(sum(r.get("attr_prefix_unique_top2", 0) for r in g)),
             "lexicon": lexicon,
         })
     return out
@@ -211,29 +294,45 @@ def to_markdown(summary: list[dict]) -> str:
     status = (f"> ⚠️ **STALE — không trích:** {', '.join(stale)} được tạo từ lexicon khác bản hiện tại "
               "(hash trong rtg/*.json không khớp). Chạy lại RTG rồi chạy lại N8." if stale else
               "> ✅ Mọi hàng dùng RTG khớp hash lexicon hiện tại (kiểm tra tự động khi chạy N8).")
+    f = lambda v: "–" if v != v else f"{v:.1f}"  # noqa: E731  (nan -> –)
+    g = lambda r, k: f(r.get(k, float("nan")))  # noqa: E731
+    mark = lambda r: "" if r.get("lexicon", "ok") == "ok" else " ⚠️"  # noqa: E731
     lines = [
         "# N8 — Truy xuất đúng tên và nhận nhầm tên (RQ1)", "", status, "",
+        "## Bảng 1 — Tên chính xác / alias", "",
         "Tỉ lệ % trên số ảnh của split (train, cả có nhãn và không nhãn). "
         "*Đúng top-3*: tên lớp đúng nằm trong top-3 tag. *Nhầm top-1*: tag đứng đầu là tên lớp khác "
         "trong cùng tập (tách theo lớp bị gọi tên là Old/New). *Đúng top-3 (có tên)*: chỉ tính ảnh của "
-        "lớp có tên trong tag của lexicon B. *Rò tiền tố*: top-3 có tag là tiền tố token ngắn hơn của tên lớp "
-        "đúng (trực tiếp hoặc sau khi bỏ token đầu, vd `canyon` < `gmc canyon …`), không tính tên chính xác; "
-        "*(chỉ lớp này)*: tiền tố không khớp lớp nào khác trong tập. Hai cột này dùng bộ tách token riêng, "
-        "độc lập với bộ lọc N3, nên đo được rò tên cấp thô mà các cột khác không thấy.", "",
+        "lớp có tên trong tag của lexicon B.", "",
         "| Tập | Bản | Nhóm | Ảnh | Đúng top-3 | Đúng top-3 (có tên) | Đúng top-1 | Nhầm top-1 "
-        "| ↳ gọi tên Old | ↳ gọi tên New | Top-1 không phải tên lớp | Không tag | Thuộc tính đúng tên "
-        "| Rò tiền tố top-3 | Rò tiền tố (chỉ lớp này) |",
-        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+        "| ↳ gọi tên Old | ↳ gọi tên New | Top-1 không phải tên lớp | Không tag | Thuộc tính đúng tên |",
+        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
-    f = lambda v: "–" if v != v else f"{v:.1f}"  # noqa: E731  (nan -> –)
     for r in summary:
         lines.append(
             f"| {DS_TITLE[r['dataset']]} | {r['version']} | {r['group']} | {r['images']} | "
             f"{f(r['correct_top3'])} | {f(r['correct_top3_covered'])} | {f(r['top1_correct'])} | "
             f"{f(r['top1_wrong'])} | {f(r['top1_wrong_old'])} | {f(r['top1_wrong_new'])} | "
-            f"{f(r['top1_other'])} | {f(r['no_tag'])} | {f(r['attr_correct'])} | "
-            f"{f(r.get('prefix_top3', float('nan')))} | {f(r.get('prefix_unique_top3', float('nan')))} |"
-            + ("" if r.get("lexicon", "ok") == "ok" else " ⚠️"))
+            f"{f(r['top1_other'])} | {f(r['no_tag'])} | {f(r['attr_correct'])} |" + mark(r))
+    lines += [
+        "", "## Bảng 2 — Rò tên cấp thô (tiền tố token)", "",
+        "Đo độc lập với bộ lọc N3 (bộ tách token riêng). Một tag (hoặc phần `X` của `X which …`) *rò tiền tố* "
+        "nếu là tiền tố token ngắn hơn của tên/alias lớp đúng; chỉ bỏ **tên hãng** ở đầu (Cars: hãng xe; "
+        "Aircraft: hãng trong alias đã duyệt; CUB: không bỏ), nên `canyon` < `gmc canyon …`, `boeing 747` khớp "
+        "cả 747-100/200 (Old) lẫn 747-400 (New), còn `Manic GT` không khớp `Ford GT`. Không tính tên chính xác "
+        "và dạng `từ thêm + tên chính xác` (`lesser nighthawk`). *≥2 token* / *1 token* tách theo số token của tag "
+        "(nhóm 1 token gồm cả từ thông dụng như `house`, cần kiểm tay: `n8_prefix_hits.csv`). *Chỉ-New*: mọi lớp "
+        "khớp đều New (luật N3 của Tân; ảnh Old luôn 0). *Chỉ lớp này*: chỉ khớp đúng lớp của ảnh (chặt hơn).", "",
+        "| Tập | Bản | Nhóm | Tag ≥2 token | Tag 1 token (kiểm tay) | Tag chỉ-New | Tag chỉ lớp này "
+        "| Thuộc tính | Thuộc tính chỉ-New | Thuộc tính chỉ lớp này |",
+        "|---|---|---|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for r in summary:
+        lines.append(
+            f"| {DS_TITLE[r['dataset']]} | {r['version']} | {r['group']} | {g(r, 'prefix_ge2_top3')} | "
+            f"{g(r, 'prefix_1tok_top3')} | {g(r, 'prefix_newonly_top3')} | {g(r, 'prefix_unique_top3')} | "
+            f"{g(r, 'attr_prefix_top2')} | {g(r, 'attr_prefix_newonly_top2')} | {g(r, 'attr_prefix_unique_top2')} |"
+            + mark(r))
     return "\n".join(lines) + "\n"
 
 
@@ -246,7 +345,7 @@ def main(argv=None) -> None:
     p.add_argument("--versions", nargs="+", default=["B", "C"], choices=["B", "C", "D"])
     args = p.parse_args(argv)
 
-    summary = []
+    summary, hits = [], {}
     for ds in args.datasets:
         for ver in args.versions:
             rows = evaluate(ds, ver, args.rtg_dir, args.root)
@@ -254,6 +353,11 @@ def main(argv=None) -> None:
             if status != "ok":
                 print(f"CẢNH BÁO {ds}/{ver}: rtg {status} so với lexicon hiện tại -> không trích hàng này",
                       file=sys.stderr)
+            names = {c["label"]: c["class_name"] for c in n3.load_names(args.root / "names" / f"{ds}.csv")}
+            for row in rows:
+                for src, text, n, labels in row.pop("_hits"):
+                    key = (ds, ver, src, text.strip(), n, " | ".join(names[x] for x in labels), names[row["label"]])
+                    hits[key] = hits.get(key, 0) + 1
             write_csv(args.out / f"{ds}_{ver}_per_image.csv", rows)
             summary += summarize(rows, ds, ver, status)
             if ver == "C":  # risk check in the plan: C must never retrieve a New class name
@@ -262,9 +366,13 @@ def main(argv=None) -> None:
                     print(f"CẢNH BÁO {ds}/C: {new_hits} ảnh New vẫn truy xuất được tên lớp đúng "
                           f"-> lọc tên còn sót, báo N3/N6", file=sys.stderr)
     write_csv(args.out / "n8_summary.csv", summary)
+    hit_rows = [dict(zip(("dataset", "version", "source", "text", "n_tokens", "matched_classes", "own_class"), k),
+                     images=v) for k, v in sorted(hits.items(), key=lambda kv: (kv[0][:2], -kv[1]))]
+    if hit_rows:
+        write_csv(args.out / "n8_prefix_hits.csv", hit_rows)
     (args.out / "n8_summary.md").write_text(to_markdown(summary), encoding="utf-8", newline="\n")
     print(to_markdown(summary))
-    print(f"Đã ghi {args.out}/n8_summary.csv, n8_summary.md và *_per_image.csv")
+    print(f"Đã ghi {args.out}/n8_summary.csv, n8_summary.md, n8_prefix_hits.csv và *_per_image.csv")
 
 
 if __name__ == "__main__":
