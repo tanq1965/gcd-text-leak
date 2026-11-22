@@ -15,7 +15,11 @@ import numpy as np
 import pandas as pd
 
 DATASET_ORDER = ["cub", "scars", "aircraft"]
-VARIANT_ORDER = ["A", "B", "A+B", "A+B_a0.25", "A+B_a0.75", "C", "A+C", "D", "A+D"]
+VARIANT_ORDER = [
+    "A", "B", "A+B", "A+B_a0.25", "A+B_a0.75",
+    "C", "A+C", "A+C_a0.25", "A+C_a0.75",
+    "D", "A+D", "A+D_a0.25", "A+D_a0.75",
+]
 
 
 def parse_result_filename(filename: str) -> tuple[str, str, int] | None:
